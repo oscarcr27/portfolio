@@ -12,7 +12,7 @@ Este proyecto es una **Landing Page de una sola página** diseñada para present
 
 Este portafolio es un sitio estático que está alojado y disponible en línea a través de Vercel (o tu plataforma de elección).
 
-* **URL del Sitio Web:** [**TU_URL_DE_VERCEL_AQUI**] (Ejemplo: `mi-portafolio.vercel.app`)
+* **URL del Sitio Web:** https://oscarcaravaca.vercel.app/
 * **Repositorio GitHub:** [https://github.com/oscarcr27/portfolio](https://github.com/oscarcr27/portfolio)
 
 ---
