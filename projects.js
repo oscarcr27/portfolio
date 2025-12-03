@@ -16,7 +16,7 @@ const projects = [
             { name: "Font Awesome", color: "purple", hex: "a855f7", icon: "fas fa-icons" }
         ],
         demoUrl: "#",
-        codeUrl: "El código de este portafolio está disponible en la vista del editor.",
+        codeUrl: "https://github.com/oscarcr27/portfolio",
         codeSnippet: `// Snippet de la función principal de renderizado (JavaScript)
 /**
  * Función principal para renderizar todos los proyectos en el DOM.
