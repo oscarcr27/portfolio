@@ -1,810 +1,1302 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      Óscar Caravaca | Portafolio Técnico Informático y Desarrollador Web
-    </title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
-    <script>
-      // Configuración extendida de Tailwind para definir la paleta 'primary' (Azules)
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              primary: {
-                50: "#eff6ff",
-                100: "#dbeafe",
-                200: "#bfdbfe",
-                300: "#93c5fd",
-                400: "#60a5fa",
-                500: "#3b82f6", // Azul principal
-                600: "#2563eb",
-                700: "#1d4ed8",
-                800: "#1e40af",
-                900: "#1e3a8a",
-              },
-              // Se mantiene cyan para acentos claros si se desea, aunque se usa blue-XXX en el Hero
-            },
-          },
-        },
-      };
-    </script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="assets/css/style.css" />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Óscar Caravaca | Técnico Informático y Desarrollador Web</title>
 
-  <body
-    class="bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800 antialiased"
-  >
-    <header
-      id="navbar"
-      class="fixed top-0 z-50 w-full transition-all duration-300"
-    >
-      <nav
-        class="container mx-auto px-6 py-4 flex justify-between items-center"
-      >
-        <a
-          href="#inicio"
-          class="text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors"
-        >
-          Óscar Caravaca
+  <!-- SEO -->
+  <meta name="description" content="Portfolio de Óscar Caravaca, Técnico Informático con experiencia en Soporte IT, Administración de Sistemas y Desarrollo Web Full-Stack. Disponibilidad inmediata." />
+  <meta name="keywords" content="técnico informático, soporte IT, desarrollo web, WordPress, PHP, Angular, React, Córdoba" />
+  <meta name="author" content="Óscar Caravaca" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Óscar Caravaca | Técnico Informático y Desarrollador Web" />
+  <meta property="og:description" content="Técnico Informático especialista en Soporte IT y Desarrollo Web Full-Stack. Disponibilidad inmediata." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://oscarcaravaca.vercel.app" />
+  <meta property="og:image" content="https://oscarcaravaca.vercel.app/assets/img/photo_2024-05-06_11-09-14.jpg" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Óscar Caravaca | Técnico Informático y Desarrollador Web" />
+  <meta name="twitter:description" content="Técnico Informático especialista en Soporte IT y Desarrollo Web Full-Stack." />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --bg2: #161b27;
+      --bg3: #1e2535;
+      --border: #2a3347;
+      --accent: #4f8ef7;
+      --accent2: #7c6af7;
+      --text: #e8eaf0;
+      --text2: #8b95aa;
+      --text3: #5a6275;
+      --green: #3dd68c;
+      --radius: 10px;
+      --font: 'Inter', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(15, 17, 23, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      text-decoration: none;
+      font-family: var(--mono);
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-social {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .nav-social a {
+      color: var(--text3);
+      text-decoration: none;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-social a:hover { color: var(--accent); }
+
+    .nav-social svg { width: 18px; height: 18px; fill: currentColor; }
+
+    /* ── HERO ── */
+    #inicio {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 80px 2rem 4rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 4rem;
+      align-items: center;
+      width: 100%;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 24px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-weight: 500;
+      color: var(--text2);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-desc {
+      color: var(--text2);
+      font-size: 15px;
+      max-width: 520px;
+      margin-bottom: 2rem;
+      line-height: 1.8;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 2rem;
+    }
+
+    .badge {
+      font-size: 12px;
+      font-family: var(--mono);
+      padding: 4px 12px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      color: var(--text2);
+      background: var(--bg2);
+    }
+
+    .badge.green { border-color: var(--green); color: var(--green); }
+    .badge.blue { border-color: var(--accent); color: var(--accent); }
+
+    .hero-ctas {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border: 1px solid var(--border);
+      color: var(--text2);
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+
+    .hero-photo {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--border);
+      filter: grayscale(20%);
+      transition: filter 0.3s;
+    }
+
+    .hero-photo:hover { filter: grayscale(0%); }
+
+    /* ── SECTIONS ── */
+    section {
+      padding: 5rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700;
+      margin-bottom: 3rem;
+      letter-spacing: -0.02em;
+    }
+
+    .divider {
+      width: 40px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+      margin-bottom: 3rem;
+    }
+
+    /* ── EXPERIENCIA ── */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 2rem;
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .timeline-item:last-child { border-bottom: none; }
+
+    .timeline-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .timeline-date {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .timeline-company {
+      font-size: 13px;
+      color: var(--text3);
+    }
+
+    .timeline-role {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .timeline-body { font-size: 14px; color: var(--text2); }
+
+    .timeline-body ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .timeline-body li::before {
+      content: '→ ';
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .tech-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .tech-pill {
+      font-size: 11px;
+      font-family: var(--mono);
+      padding: 3px 10px;
+      border-radius: 4px;
+      background: var(--bg3);
+      color: var(--text2);
+      border: 1px solid var(--border);
+    }
+
+    /* ── HABILIDADES ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .skill-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+
+    .skill-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .skill-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .skill-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--bg3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .skill-card-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .skill-tag {
+      font-size: 12px;
+      font-family: var(--mono);
+      padding: 3px 10px;
+      border-radius: 4px;
+      background: var(--bg3);
+      color: var(--text2);
+      border: 1px solid var(--border);
+    }
+
+    /* ── FORMACIÓN ── */
+    .edu-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .edu-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .edu-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .edu-center {
+      font-size: 13px;
+      color: var(--text2);
+    }
+
+    .edu-date {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text3);
+      white-space: nowrap;
+    }
+
+    /* ── CONTACTO ── */
+    #contacto {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 5rem 2rem;
+      max-width: none;
+    }
+
+    .contact-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .contact-desc {
+      font-size: 15px;
+      color: var(--text2);
+      margin-bottom: 2rem;
+      line-height: 1.8;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .contact-link:hover { color: var(--accent); }
+
+    .contact-link-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .form-group label {
+      font-size: 13px;
+      color: var(--text2);
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 13px;
+      color: var(--text3);
+      font-family: var(--mono);
+    }
+
+    /* ── HAMBURGER ── */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text2);
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      .hero-inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero-inner > div:first-child { order: 2; }
+      .hero-photo { width: 140px; height: 140px; margin: 0 auto; order: 1; }
+      .hero-eyebrow { justify-content: center; }
+      .hero-badges { justify-content: center; }
+      .hero-ctas { justify-content: center; }
+
+      .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+
+      .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+
+      .edu-card { flex-direction: column; gap: 4px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#inicio" class="nav-logo">oc<span>.</span>dev</a>
+  <ul class="nav-links">
+    <li><a href="#experiencia">Experiencia</a></li>
+    <li><a href="#habilidades">Habilidades</a></li>
+    <li><a href="#proyectos">Proyectos</a></li>
+    <li><a href="#formacion">Formación</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+  <div class="nav-social">
+    <a href="https://github.com/oscarcr27" target="_blank" rel="noopener" aria-label="GitHub">
+      <i class="fa-brands fa-github" style="font-size:18px;"></i>
+    </a>
+    <a href="https://linkedin.com/in/YOUR_USERNAME" target="_blank" rel="noopener" aria-label="LinkedIn">
+      <i class="fa-brands fa-linkedin" style="font-size:18px;"></i>
+    </a>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="inicio">
+  <div class="hero-inner">
+    <div>
+      <p class="hero-eyebrow"><i class="fa-solid fa-code"></i> Bienvenido a mi portfolio</p>
+      <h1>Óscar Caravaca</h1>
+      <p class="hero-subtitle">Técnico Informático &amp; Desarrollador Web</p>
+      <p class="hero-desc">
+        Especialista en Soporte IT y soluciones web Full-Stack con más de 7 años de experiencia.
+        Trabajo con WordPress, PHP, Angular y React para construir soluciones que funcionan de verdad.
+      </p>
+      <div class="hero-badges">
+        <span class="badge green"><i class="fa-solid fa-circle-check"></i> Disponibilidad inmediata</span>
+        <span class="badge blue"><i class="fa-solid fa-car"></i> Permiso B + vehículo propio</span>
+        <span class="badge"><i class="fa-solid fa-location-dot"></i> Córdoba, España</span>
+      </div>
+      <div class="hero-ctas">
+        <a href="assets/cv/Currículum Óscar Caravaca.pdf" download class="btn-primary">
+          <i class="fa-solid fa-download"></i> Descargar CV
         </a>
+        <a href="#contacto" class="btn-ghost"><i class="fa-solid fa-envelope"></i> Contactar</a>
+      </div>
+    </div>
+    <img
+      src="https://oscarcaravaca.vercel.app/assets/img/photo_2024-05-06_11-09-14.jpg"
+      alt="Foto de Óscar Caravaca"
+      class="hero-photo"
+      width="200" height="200"
+    />
+  </div>
+</section>
 
-        <div class="hidden md:flex space-x-6 items-center">
-          <a
-            href="#experiencia"
-            class="text-gray-700 hover:text-primary-600 transition-colors font-medium"
-            >Experiencia</a
-          >
-          <a
-            href="#habilidades"
-            class="text-gray-700 hover:text-primary-600 transition-colors font-medium"
-            >Habilidades</a
-          >
-          <a
-            href="#formacion"
-            class="text-gray-700 hover:text-primary-600 transition-colors font-medium"
-            >Formación</a
-          >
-          <a
-            href="#proyectos"
-            class="text-gray-700 hover:text-primary-600 transition-colors font-medium"
-            >Proyectos</a
-          >
-          <a
-            href="#contacto"
-            class="px-5 py-2 bg-primary-600 text-white rounded-full hover:bg-primary-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
-          >
-            Contacto
-          </a>
-        </div>
+<!-- EXPERIENCIA -->
+<section id="experiencia">
+  <p class="section-label">Trayectoria</p>
+  <h2>Experiencia Laboral</h2>
+  <div class="divider"></div>
 
-        <button
-          id="mobile-menu-btn"
-          class="md:hidden text-gray-700 focus:outline-none"
-        >
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            ></path>
-          </svg>
-        </button>
-      </nav>
+  <div class="timeline">
 
-      <div id="mobile-menu" class="mobile-menu md:hidden bg-white shadow-lg">
-        <div class="px-6 py-4 space-y-3">
-          <a
-            href="#experiencia"
-            class="block text-gray-700 hover:text-primary-600 transition-colors font-medium"
-            >Experiencia</a
-          >
-          <a
-            href="#habilidades"
-            class="block text-gray-700 hover:text-primary-600 transition-colors font-medium"
-            >Habilidades</a
-          >
-          <a
-            href="#formacion"
-            class="block text-gray-700 hover:text-primary-600 transition-colors font-medium"
-            >Formación</a
-          >
-          <a
-            href="#proyectos"
-            class="block text-gray-700 hover:text-primary-600 transition-colors font-medium"
-            >Proyectos</a
-          >
-          <a
-            href="#contacto"
-            class="block text-center px-5 py-2 bg-primary-600 text-white rounded-full hover:bg-primary-700 transition-all"
-          >
-            Contacto
-          </a>
+    <div class="timeline-item">
+      <div class="timeline-meta">
+        <span class="timeline-date">2017 — Actualidad</span>
+        <span class="timeline-company">Cuenta Propia</span>
+      </div>
+      <div class="timeline-body">
+        <p class="timeline-role">Técnico Informático | Soporte IT | Desarrollo Web</p>
+        <ul>
+          <li>Reparación y mantenimiento de equipos, diagnóstico de incidencias hardware y software</li>
+          <li>Desarrollo y mantenimiento de sitios web con WordPress y PrestaShop</li>
+          <li>Administración de sistemas y soporte técnico integral a clientes</li>
+        </ul>
+        <div class="tech-pills">
+          <span class="tech-pill">WordPress</span>
+          <span class="tech-pill">PrestaShop</span>
+          <span class="tech-pill">PHP</span>
+          <span class="tech-pill">Angular</span>
+          <span class="tech-pill">React</span>
+          <span class="tech-pill">ASP.NET</span>
         </div>
       </div>
-    </header>
+    </div>
 
-    <main class="pt-20">
-      <section id="inicio" class="relative overflow-hidden bg-gray-50">
-        <div class="absolute inset-0 gradient-bg opacity-10"></div>
-        <div
-          class="absolute top-0 right-0 w-80 h-80 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"
-        ></div>
-        <div
-          class="absolute bottom-10 left-10 w-60 h-60 bg-cyan-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"
-        ></div>
+    <div class="timeline-item">
+      <div class="timeline-meta">
+        <span class="timeline-date">Jun – Jul 2025</span>
+        <span class="timeline-company">Zaidan · Córdoba</span>
+      </div>
+      <div class="timeline-body">
+        <p class="timeline-role">Técnico de Teleasistencia</p>
+        <ul>
+          <li>Instalación, configuración y actualización de dispositivos de teleasistencia</li>
+          <li>Gestión de incidencias técnicas mediante sistema de tickets</li>
+        </ul>
+      </div>
+    </div>
 
-        <div class="container mx-auto px-6 py-20 lg:py-36 relative z-10">
-          <div class="flex flex-col lg:flex-row items-center gap-16 relative">
-            <div
-              class="lg:w-1/3 w-full max-w-sm lg:max-w-none animate-fadeInLeft"
-            >
-              <div class="relative group">
-                <div
-                  class="absolute inset-0 bg-gradient-to-r from-primary-500 to-cyan-500 rounded-full blur-3xl opacity-30 group-hover:opacity-40 transition-opacity duration-500"
-                ></div>
-                <div
-                  class="absolute -inset-4 bg-gradient-to-r from-primary-400 via-cyan-400 to-sky-400 rounded-full opacity-20 blur-2xl animate-pulse-slow"
-                ></div>
-
-                <div
-                  class="relative overflow-hidden rounded-full w-64 h-64 lg:w-80 lg:h-80 border-4 border-white mx-auto ring-8 ring-blue-50 shadow-2xl shadow-blue-200/50 transform transition-all duration-700 ease-in-out group-hover:shadow-blue-500/50"
-                >
-                  <img
-                    src="assets/img/photo_2024-05-06_11-09-14.jpg"
-                    alt="Foto de Perfil de Óscar Caravaca"
-                    class="relative w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-700"
-                  />
-                  <div
-                    class="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/50 to-transparent opacity-0 group-hover:opacity-10 transition-opacity duration-500"
-                  ></div>
-                </div>
-              </div>
-            </div>
-
-            <div
-              class="lg:w-2/3 space-y-8 animate-fadeInRight text-center lg:text-left"
-            >
-              <div
-                class="inline-block px-5 py-2 bg-primary-100 text-primary-600 rounded-full text-base lg:text-sm font-bold tracking-wider shadow-md"
-                style="animation-delay: 0s"
-              >
-                💼 Técnico Informático | Soporte IT | Desarrollo Web
-              </div>
-
-              <h1
-                class="text-3xl lg:text-6xl font-extrabold text-gray-900 leading-tight"
-                style="animation-delay: 0.1s"
-              >
-                <span class="block mb-2">¡Hola! Soy</span>
-                <span
-                  class="bg-gradient-to-r from-primary-600 to-cyan-600 bg-clip-text text-transparent transition-all duration-300 hover:text-blue-700"
-                >
-                  Óscar Caravaca
-                </span>
-              </h1>
-
-              <p
-                class="text-xl lg:text-lg text-gray-700 leading-relaxed max-w-3xl border-l-4 border-primary-400 pl-4 italic mx-auto lg:mx-0"
-                style="animation-delay: 0.2s"
-              >
-                Técnico Informático, especialista en Soporte IT y Desarrollo de
-                Soluciones. Poseo experiencia integral en Administración de
-                Sistemas, WordPress y tecnologías Full-Stack (PHP, Angular...).
-                Mi enfoque garantiza la optimización de procesos y la
-                estabilidad técnica en cualquier entorno.
-              </p>
-
-              <div
-                class="flex flex-wrap justify-center sm:justify-center lg:justify-start gap-4 sm:gap-5 pt-4"
-                style="animation-delay: 0.3s"
-              >
-                <a
-                  href="mailto:caravacaoscar@gmail.com"
-                  class="flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-3 lg:px-5 lg:py-3 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-2 border-transparent hover:border-primary-400 text-center"
-                >
-                  <span class="text-xl sm:text-3xl lg:text-xl text-primary-500"
-                    >📧</span
-                  >
-                  <span
-                    class="text-base sm:text-lg lg:text-sm text-gray-800 font-semibold"
-                    >caravacaoscar@gmail.com</span
-                  >
-                </a>
-                <a
-                  href="tel:685360295"
-                  class="flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-4 lg:px-4 lg:py-3 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-2 border-transparent hover:border-primary-400 text-center"
-                >
-                  <span class="text-2xl sm:text-3xl lg:text-xl text-primary-500"
-                    >📞</span
-                  >
-                  <span
-                    class="text-base sm:text-lg lg:text-sm text-gray-800 font-semibold"
-                    >685 360 295</span
-                  >
-                </a>
-                <a
-                  href="assets/cv/Currículum Óscar Caravaca.pdf"
-                  download
-                  class="flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-3 lg:px-5 lg:py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl shadow-lg hover:shadow-xl hover:from-primary-700 hover:to-primary-800 transition-all duration-300 border-2 border-primary-500 text-center transform hover:scale-105"
-                >
-                  <span class="text-xl sm:text-3xl lg:text-xl">📄</span>
-                  <span class="text-base sm:text-lg lg:text-sm font-semibold"
-                    >Descargar CV</span
-                  >
-                </a>
-              </div>
-
-              <div
-                class="flex flex-wrap justify-center sm:justify-center lg:justify-start gap-3 pt-3"
-                style="animation-delay: 0.4s"
-              >
-                <span
-                  class="inline-flex items-center px-4 py-2 bg-primary-50 text-primary-600 rounded-lg text-sm font-medium border border-primary-200"
-                >
-                  🚗 Permiso B + Vehículo propio
-                </span>
-                <span
-                  class="inline-flex items-center px-4 py-2 bg-primary-50 text-primary-600 rounded-lg text-sm font-medium border border-primary-200"
-                >
-                  ✅ Disponibilidad inmediata
-                </span>
-              </div>
-            </div>
-          </div>
+    <div class="timeline-item">
+      <div class="timeline-meta">
+        <span class="timeline-date">Mar – May 2025</span>
+        <span class="timeline-company">Ceifor · Córdoba</span>
+      </div>
+      <div class="timeline-body">
+        <p class="timeline-role">Desarrollo Web (Prácticas)</p>
+        <ul>
+          <li>Mantenimiento y modificación de sitios en WordPress</li>
+          <li>Desarrollo de portal de empleo completo</li>
+          <li>Gestión de bases de datos MySQL</li>
+        </ul>
+        <div class="tech-pills">
+          <span class="tech-pill">PHP</span>
+          <span class="tech-pill">HTML</span>
+          <span class="tech-pill">CSS</span>
+          <span class="tech-pill">JavaScript</span>
+          <span class="tech-pill">Bootstrap</span>
+          <span class="tech-pill">MySQL</span>
         </div>
-      </section>
+      </div>
+    </div>
 
-      <section id="experiencia" class="container mx-auto px-6 py-20">
-        <div class="text-center mb-16 scroll-reveal">
-          <h2 class="text-5xl font-black text-gray-900 mb-4">
-            Experiencia Laboral
-          </h2>
-          <div
-            class="w-24 h-1 bg-gradient-to-r from-primary-600 to-cyan-600 mx-auto rounded-full"
-          ></div>
+    <div class="timeline-item">
+      <div class="timeline-meta">
+        <span class="timeline-date">Dic 2018 – Sep 2019</span>
+        <span class="timeline-company">IGMS · Parque Joyero</span>
+      </div>
+      <div class="timeline-body">
+        <p class="timeline-role">Joyero y Desarrollador eCommerce</p>
+        <ul>
+          <li>Diseño y fabricación de joyas con software especializado y máquina láser</li>
+          <li>Desarrollo y gestión de tienda online</li>
+        </ul>
+        <div class="tech-pills">
+          <span class="tech-pill">WordPress</span>
+          <span class="tech-pill">WooCommerce</span>
         </div>
+      </div>
+    </div>
 
-        <div class="space-y-8 max-w-5xl mx-auto">
-          <div
-            class="experience-card glass-effect p-8 rounded-2xl shadow-lg border-l-4 border-primary-500 scroll-reveal"
-          >
-            <div class="flex items-start justify-between flex-wrap gap-4 mb-4">
-              <div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-2">
-                  Técnico Informático | Soporte IT | Desarrollo Web
-                </h3>
-                <p class="text-primary-600 font-semibold text-lg">
-                  Cuenta Propia
-                </p>
-              </div>
-              <span
-                class="px-4 py-2 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold"
-              >
-                Nov 2017 - Actualidad
-              </span>
-            </div>
-            <ul class="space-y-3 text-gray-600">
-              <li class="flex items-start gap-3">
-                <span class="text-primary-500 mt-1">▸</span>
-                <span
-                  ><strong>Especializado</strong> en reparación y mantenimiento
-                  de equipos informáticos, con experiencia en diagnóstico y
-                  solución de incidencias de hardware y software</span
-                >
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="text-primary-500 mt-1">▸</span>
-                <span
-                  >Desarrollo y mantenimiento de páginas web en
-                  <strong>WordPress</strong> y <strong>PrestaShop</strong></span
-                >
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="text-primary-500 mt-1">▸</span>
-                <span
-                  >Uso de tecnologías modernas:
-                  <strong
-                    >HTML, CSS, PHP, Java, JavaScript, TypeScript, C#, React,
-                    Angular, Tailwind</strong
-                  >
-                  y <strong>ASP.NET</strong></span
-                >
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="text-primary-500 mt-1">▸</span>
-                <span
-                  >Experiencia como <strong>administrador de sistemas</strong>,
-                  ofreciendo soporte técnico integral</span
-                >
-              </li>
-            </ul>
-          </div>
-
-          <div
-            class="experience-card bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all scroll-reveal"
-          >
-            <div class="flex items-start justify-between flex-wrap gap-4 mb-4">
-              <div>
-                <h3 class="text-xl font-bold text-gray-900 mb-2">
-                  Técnico de Teleasistencia
-                </h3>
-                <p class="text-gray-500 font-semibold">Zaidan (Córdoba)</p>
-              </div>
-              <span
-                class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm"
-                >Jun - Jul 2025</span
-              >
-            </div>
-            <ul class="space-y-2 text-gray-600">
-              <li class="flex items-start gap-3">
-                <span class="text-gray-400 mt-1">▸</span>
-                <span
-                  >Instalación, configuración y actualización de dispositivos de
-                  teleasistencia</span
-                >
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="text-gray-400 mt-1">▸</span>
-                <span
-                  >Gestión de incidencias técnicas mediante sistema de
-                  tickets</span
-                >
-              </li>
-            </ul>
-          </div>
-
-          <div
-            class="experience-card bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all scroll-reveal"
-          >
-            <div class="flex items-start justify-between flex-wrap gap-4 mb-4">
-              <div>
-                <h3 class="text-xl font-bold text-gray-900 mb-2">
-                  Desarrollo Web (Prácticas)
-                </h3>
-                <p class="text-gray-500 font-semibold">Ceifor (Córdoba)</p>
-              </div>
-              <span
-                class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm"
-                >Mar - May 2025</span
-              >
-            </div>
-            <ul class="space-y-2 text-gray-600">
-              <li class="flex items-start gap-3">
-                <span class="text-gray-400 mt-1">▸</span>
-                <span
-                  >Mantenimiento y modificación de sitios en
-                  <strong>WordPress</strong></span
-                >
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="text-gray-400 mt-1">▸</span>
-                <span
-                  >Desarrollo de portal de empleo con
-                  <strong>PHP, HTML, JS, CSS</strong> y
-                  <strong>Bootstrap</strong></span
-                >
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="text-gray-400 mt-1">▸</span>
-                <span>Gestión de bases de datos <strong>MySQL</strong></span>
-              </li>
-            </ul>
-          </div>
-
-          <div
-            class="experience-card bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all scroll-reveal"
-          >
-            <div class="flex items-start justify-between flex-wrap gap-4 mb-4">
-              <div>
-                <h3 class="text-xl font-bold text-gray-900 mb-2">
-                  Joyero y Desarrollador eCommerce
-                </h3>
-                <p class="text-gray-500 font-semibold">
-                  IGMS (Parque Joyero de Córdoba)
-                </p>
-              </div>
-              <span
-                class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm"
-                >Dic 2018 - Sep 2019</span
-              >
-            </div>
-            <ul class="space-y-2 text-gray-600">
-              <li class="flex items-start gap-3">
-                <span class="text-gray-400 mt-1">▸</span>
-                <span
-                  >Diseño y fabricación de joyas con software especializado y
-                  máquina láser</span
-                >
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="text-gray-400 mt-1">▸</span>
-                <span>Desarrollo y gestión de tienda online en <strong>WordPress</strong></span>
-              </li>
-            </ul>
-          </div>
-
-          <div
-            class="experience-card bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all scroll-reveal"
-          >
-            <div class="flex items-start justify-between flex-wrap gap-4 mb-4">
-              <div>
-                <h3 class="text-xl font-bold text-gray-900 mb-2">
-                  Técnico Informático
-                </h3>
-                <p class="text-gray-500 font-semibold">Tiendas Juloma</p>
-              </div>
-              <span
-                class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm"
-                >Mar - Oct 2016</span
-              >
-            </div>
-            <ul class="space-y-2 text-gray-600">
-              <li class="flex items-start gap-3">
-                <span class="text-gray-400 mt-1">▸</span>
-                <span
-                  >Instalación y reparación de equipos informáticos y
-                  móviles</span
-                >
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="text-gray-400 mt-1">▸</span>
-                <span
-                  >Desarrollo web con <strong>WordPress</strong> y soporte de
-                  fotocopiadoras en red</span
-                >
-              </li>
-            </ul>
-          </div>
+    <div class="timeline-item">
+      <div class="timeline-meta">
+        <span class="timeline-date">Mar – Oct 2016</span>
+        <span class="timeline-company">Tiendas Juloma</span>
+      </div>
+      <div class="timeline-body">
+        <p class="timeline-role">Técnico Informático</p>
+        <ul>
+          <li>Instalación y reparación de equipos informáticos y móviles</li>
+          <li>Desarrollo web y soporte de fotocopiadoras en red</li>
+        </ul>
+        <div class="tech-pills">
+          <span class="tech-pill">WordPress</span>
+          <span class="tech-pill">Redes</span>
         </div>
-      </section>
+      </div>
+    </div>
 
-      <section
-        id="habilidades"
-        class="bg-gradient-to-br from-primary-50 to-cyan-50 py-20"
-      >
-        <div class="container mx-auto px-6">
-          <div class="text-center mb-16 scroll-reveal">
-            <h2 class="text-5xl font-black text-gray-900 mb-4">
-              Tecnologías y Habilidades
-            </h2>
-            <div
-              class="w-24 h-1 bg-gradient-to-r from-primary-600 to-cyan-600 mx-auto rounded-full"
-            ></div>
-          </div>
+  </div>
+</section>
 
-          <div
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto"
-          >
-            <div
-              class="skill-card glass-effect p-8 rounded-2xl shadow-lg text-center scroll-reveal hover:shadow-primary-300/50"
-            >
-              <div class="text-5xl mb-4">⚛️</div>
-              <h4 class="font-bold text-xl text-gray-900 mb-3">
-                Frameworks Frontend
-              </h4>
-              <p class="text-gray-600">React, Angular, Tailwind CSS</p>
-            </div>
+<!-- HABILIDADES -->
+<section id="habilidades">
+  <p class="section-label">Stack técnico</p>
+  <h2>Tecnologías y Habilidades</h2>
+  <div class="divider"></div>
 
-            <div
-              class="skill-card glass-effect p-8 rounded-2xl shadow-lg text-center scroll-reveal hover:shadow-primary-300/50"
-            >
-              <div class="text-5xl mb-4">💻</div>
-              <h4 class="font-bold text-xl text-gray-900 mb-3">
-                Lenguajes de Programación
-              </h4>
-              <p class="text-gray-600">PHP, C#, Java, JavaScript, TypeScript</p>
-            </div>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-card-header">
+        <div class="skill-icon"><i class="fa-brands fa-react" style="color:#61dafb;"></i></div>
+        <span class="skill-card-title">Frontend</span>
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">React</span>
+        <span class="skill-tag">Angular</span>
+        <span class="skill-tag">TypeScript</span>
+        <span class="skill-tag">JavaScript</span>
+        <span class="skill-tag">Tailwind CSS</span>
+        <span class="skill-tag">HTML5</span>
+        <span class="skill-tag">CSS3</span>
+      </div>
+    </div>
 
-            <div
-              class="skill-card glass-effect p-8 rounded-2xl shadow-lg text-center scroll-reveal hover:shadow-primary-300/50"
-            >
-              <div class="text-5xl mb-4">⚙️</div>
-              <h4 class="font-bold text-xl text-gray-900 mb-3">
-                Backend y Bases de Datos
-              </h4>
-              <p class="text-gray-600">ASP.NET, APIs, MySQL</p>
-            </div>
+    <div class="skill-card">
+      <div class="skill-card-header">
+        <div class="skill-icon"><i class="fa-solid fa-server" style="color:#4f8ef7;"></i></div>
+        <span class="skill-card-title">Backend y Bases de Datos</span>
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">PHP</span>
+        <span class="skill-tag">C#</span>
+        <span class="skill-tag">Java</span>
+        <span class="skill-tag">ASP.NET</span>
+        <span class="skill-tag">MySQL</span>
+        <span class="skill-tag">APIs REST</span>
+      </div>
+    </div>
 
-            <div
-              class="skill-card glass-effect p-8 rounded-2xl shadow-lg text-center scroll-reveal hover:shadow-primary-300/50"
-            >
-              <div class="text-5xl mb-4">🌐</div>
-              <h4 class="font-bold text-xl text-gray-900 mb-3">
-                CMS/E-commerce
-              </h4>
-              <p class="text-gray-600">
-                WordPress, PrestaShop, Elementor, Divi
-              </p>
-            </div>
+    <div class="skill-card">
+      <div class="skill-card-header">
+        <div class="skill-icon"><i class="fa-brands fa-wordpress" style="color:#21759b;"></i></div>
+        <span class="skill-card-title">CMS y eCommerce</span>
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">WordPress</span>
+        <span class="skill-tag">PrestaShop</span>
+        <span class="skill-tag">WooCommerce</span>
+        <span class="skill-tag">Elementor</span>
+        <span class="skill-tag">Divi</span>
+      </div>
+    </div>
 
-            <div
-              class="skill-card glass-effect p-8 rounded-2xl shadow-lg text-center scroll-reveal hover:shadow-primary-300/50"
-            >
-              <div class="text-5xl mb-4">🛠️</div>
-              <h4 class="font-bold text-xl text-gray-900 mb-3">
-                Soporte IT y Sistemas
-              </h4>
-              <p class="text-gray-600">
-                Diagnóstico HW/SW, Redes, Administración
-              </p>
-            </div>
+    <div class="skill-card">
+      <div class="skill-card-header">
+        <div class="skill-icon"><i class="fa-solid fa-screwdriver-wrench" style="color:#7c6af7;"></i></div>
+        <span class="skill-card-title">Soporte IT y Sistemas</span>
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">Diagnóstico HW/SW</span>
+        <span class="skill-tag">Redes</span>
+        <span class="skill-tag">Windows Server</span>
+        <span class="skill-tag">Linux</span>
+        <span class="skill-tag">Active Directory</span>
+      </div>
+    </div>
 
-            <div
-              class="skill-card glass-effect p-8 rounded-2xl shadow-lg text-center scroll-reveal hover:shadow-primary-300/50"
-            >
-              <div class="text-5xl mb-4">🗣️</div>
-              <h4 class="font-bold text-xl text-gray-900 mb-3">Idiomas</h4>
-              <p class="text-gray-600">
-                <strong>Castellano:</strong> Nativo<br /><strong
-                  >Inglés:</strong
-                >
-                B1
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+    <div class="skill-card">
+      <div class="skill-card-header">
+        <div class="skill-icon"><i class="fa-solid fa-language" style="color:#3dd68c;"></i></div>
+        <span class="skill-card-title">Idiomas</span>
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">Español — Nativo</span>
+        <span class="skill-tag">Inglés — B1</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-      <section id="formacion" class="container mx-auto px-6 py-20">
-        <div class="text-center mb-16 scroll-reveal">
-          <h2 class="text-5xl font-black text-gray-900 mb-4">
-            Formación Académica
-          </h2>
-          <div
-            class="w-24 h-1 bg-gradient-to-r from-primary-600 to-cyan-600 mx-auto rounded-full"
-          ></div>
-        </div>
+<!-- PROYECTOS -->
+<section id="proyectos">
+  <p class="section-label">Mi trabajo</p>
+  <h2>Proyectos Destacados</h2>
+  <div class="divider"></div>
 
-        <div class="space-y-6 max-w-3xl mx-auto">
-          <div
-            class="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-primary-500 scroll-reveal"
-          >
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">
-              Grado Superior en Desarrollo de Aplicaciones Web
-            </h3>
-            <p class="text-primary-600 font-semibold text-lg">MEDAC</p>
-          </div>
+  <div class="proyectos-grid">
 
-          <div
-            class="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-primary-500 scroll-reveal"
-          >
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">
-              Grado Medio en Técnico de Sistemas Microinformáticos y Redes
-            </h3>
-            <p class="text-primary-600 font-semibold text-lg">
-              IES Mario López | Sep 2013 - 2015
-            </p>
-          </div>
-
-          <div
-            class="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-primary-500 scroll-reveal"
-          >
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">
-              Educación Secundaria Obligatoria (ESO)
-            </h3>
-            <p class="text-primary-600 font-semibold text-lg">
-              IES Sácilis | Sep 2009-2013
+    <!-- PROYECTO 1 -->
+    <div class="proyecto-card">
+      <img
+        src="https://oscarcaravaca.vercel.app/assets/img/portafolio.png"
+        alt="Captura del Portafolio de Óscar Caravaca"
+        class="proyecto-img"
+      />
+      <div class="proyecto-header">
+        <div class="proyecto-top">
+          <div>
+            <span class="proyecto-status">
+              <i class="fa-solid fa-circle-check"></i> Proyecto Finalizado
+            </span>
+            <h3 class="proyecto-title">Portafolio Personal</h3>
+            <p class="proyecto-desc">
+              El sitio web que estás viendo. Desarrollado como un portafolio dinámico utilizando HTML5 y CSS como base, Vanilla JavaScript para la gestión de datos, Tailwind CSS para el diseño responsivo y Font Awesome para los iconos de tecnología.
             </p>
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- Sección de Proyectos (Dinámica) - Ancho ajustado a max-w-6xl -->
-      <section
-        id="proyectos"
-        class="bg-gradient-to-br from-primary-50 to-cyan-50 py-20"
-      >
-        <!-- Contenedor principal para centrar y aplicar padding -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <!-- Título: Centrado y Margen -->
-          <div class="text-center mb-10">
-            <h3 class="text-4xl font-extrabold text-gray-800 mb-4">
-              Mis Proyectos Destacados
-            </h3>
-            <div
-              class="w-24 h-1 bg-gradient-to-r from-indigo-600 to-cyan-600 mx-auto rounded-full"
-            ></div>
-          </div>
+      <div class="proyecto-stack">
+        <span class="stack-tag"><i class="fa-brands fa-html5" style="color:#e34c26;"></i> HTML5</span>
+        <span class="stack-tag"><i class="fa-brands fa-css3-alt" style="color:#264de4;"></i> CSS3</span>
+        <span class="stack-tag"><i class="fa-brands fa-js" style="color:#f7df1e;"></i> JavaScript</span>
+        <span class="stack-tag"><i class="fa-solid fa-wind" style="color:#38bdf8;"></i> Tailwind CSS</span>
+        <span class="stack-tag"><i class="fa-brands fa-font-awesome" style="color:#528dd7;"></i> Font Awesome</span>
+      </div>
 
-          <!-- Contenedor de la Galería de Proyectos (Grid responsivo) -->
-          <!-- Aplicamos max-w-6xl y mx-auto a la rejilla de proyectos -->
-          <div
-            id="projects-container"
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-5 max-w-6xl mx-auto"
-          >
-            <!-- Tarjetas de proyecto dinámicas van aquí -->
-          </div>
+      <div class="proyecto-code">
+        <div class="code-header">
+          <span class="code-filename"><i class="fa-solid fa-file-code"></i> main.js</span>
+          <button class="code-copy" onclick="copySnippet(this)" title="Copiar código">
+            <i class="fa-regular fa-copy"></i> Copiar
+          </button>
         </div>
-      </section>
+        <pre class="code-block"><code><span class="c-comment">// Función principal para renderizar todos los proyectos en el DOM.</span>
+<span class="c-keyword">const</span> <span class="c-fn">renderProjects</span> = () => {
+  <span class="c-keyword">const</span> container = document.<span class="c-fn">getElementById</span>(<span class="c-str">'projects-container'</span>);
+  <span class="c-comment">// ... lógica de renderizado</span>
+  <span class="c-keyword">const</span> projectHtmlArray = projects.<span class="c-fn">map</span>(createProjectCard);
+  container.innerHTML = projectHtmlArray.<span class="c-fn">join</span>(<span class="c-str">''</span>);
+};
 
-      <!-- Enlaza el archivo de lógica JavaScript como un módulo -->
-      <script type="module" src="./projects.js"></script>
+document.<span class="c-fn">addEventListener</span>(<span class="c-str">'DOMContentLoaded'</span>, renderProjects);</code></pre>
+      </div>
 
-      <!-- Modal de Visualización de Código (NUEVO) -->
-      <!-- Se muestra/oculta manipulando la clase 'hidden' en projects.js -->
-      <div
-        id="code-modal"
-        class="fixed inset-0 flex items-center justify-center p-4 z-50 hidden"
-      >
-        <div
-          class="rounded-xl shadow-2xl w-full max-w-3xl max-h-[9vh] overflow-hidden flex flex-col"
-        >
-          <!-- Header de la Modal -->
-          <div
-            class="p-6 border-b border-gray-200 flex justify-between items-center flex-shrink-0"
-          >
-            <h4
-              id="code-modal-title"
-              class="text-xl font-bold text-gray-800 truncate"
-            >
-              Cargando Código...
-            </h4>
-            <button
-              onclick="closeModal()"
-              class="text-gray-400 hover:text-gray-600 focus:outline-none"
-            >
-              <svg
-                class="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
-              </svg>
-            </button>
-          </div>
+      <div class="proyecto-links">
+        <a href="https://oscarcaravaca.vercel.app" target="_blank" rel="noopener" class="btn-primary" style="font-size:13px; padding:8px 18px;">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Demo en Vivo
+        </a>
+        <a href="https://github.com/oscarcr27/portfolio" target="_blank" rel="noopener" class="btn-ghost" style="font-size:13px; padding:8px 18px;">
+          <i class="fa-brands fa-github"></i> Ver en GitHub
+        </a>
+      </div>
+    </div>
 
-          <!-- Contenido del Código (Scrollable) -->
-          <div class="px-4 flex-grow overflow-y-auto">
-            <pre
-              class="whitespace-pre-wrap rounded-lg text-green-400 text-sm overflow-x-auto h-full"
-            >
-                    <code id="code-snippet">
-                        // El código del proyecto aparecerá aquí.
-                    </code>
-                </pre>
-          </div>
-
-          <!-- Footer de la Modal -->
-          <div class="p-4 border-t border-gray-200 text-right flex-shrink-0">
-            <button
-              onclick="closeModal()"
-              class="px-4 py-2 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition duration-150"
-            >
-              Cerrar
-            </button>
+    <!-- PROYECTO 2 -->
+    <div class="proyecto-card">
+      <img
+        src="https://oscarcaravaca.vercel.app/assets/img/agencia-portal-empleo.png"
+        alt="Captura del Portal de Empleo"
+        class="proyecto-img"
+      />
+      <div class="proyecto-header">
+        <div class="proyecto-top">
+          <div>
+            <span class="proyecto-status">
+              <i class="fa-solid fa-circle-check"></i> Proyecto Finalizado
+            </span>
+            <h3 class="proyecto-title">Portal de Empleo y Gestión de Candidatos</h3>
+            <p class="proyecto-desc">
+              Plataforma completa para la publicación de ofertas de empleo, gestión de usuarios (Demandante, Empresa, Gestor) y del proceso de selección. Incluye autenticación con contraseñas encriptadas, filtros avanzados para ofertas, y módulos CRUD para la administración de entidades como Demandantes, Empresas y Niveles Formativos.
+            </p>
           </div>
         </div>
       </div>
-    </main>
 
-    <footer id="contacto" class="bg-gray-900 text-white py-16">
-      <div class="container mx-auto px-6">
-        <div class="text-center mb-12">
-          <h3 class="text-4xl font-bold mb-4">¿Hablamos?</h3>
-          <p class="text-gray-400 text-lg max-w-2xl mx-auto">
-            Técnico informático y desarrollador web con disponibilidad
-            inmediata. Siempre abierto a nuevos proyectos y oportunidades.
-          </p>
+      <div class="proyecto-stack">
+        <span class="stack-tag"><i class="fa-brands fa-php" style="color:#777bb4;"></i> PHP</span>
+        <span class="stack-tag"><i class="fa-solid fa-database" style="color:#4479a1;"></i> MySQL</span>
+        <span class="stack-tag"><i class="fa-brands fa-bootstrap" style="color:#7952b3;"></i> Bootstrap</span>
+        <span class="stack-tag"><i class="fa-solid fa-table-list" style="color:#3dd68c;"></i> CRUD</span>
+      </div>
+
+      <div class="proyecto-code">
+        <div class="code-header">
+          <span class="code-filename"><i class="fa-solid fa-file-code"></i> Demandante.php</span>
+          <button class="code-copy" onclick="copySnippet(this)" title="Copiar código">
+            <i class="fa-regular fa-copy"></i> Copiar
+          </button>
         </div>
+        <pre class="code-block"><code><span class="c-comment">// CRUD para la gestión de demandantes</span>
+<span class="c-keyword">class</span> <span class="c-fn">Demandante</span> {
+  <span class="c-keyword">public function</span> <span class="c-fn">obtenerDemandantes</span>($filtro = <span class="c-str">''</span>, $limite = <span class="c-str">20</span>) {
+    $sql = <span class="c-str">"SELECT DNI, Nombre, Apellido1, Apellido2, FechaNacimiento FROM demandantes"</span>;
+    <span class="c-keyword">if</span> (!empty($filtro)) {
+      $sql .= <span class="c-str">" WHERE Nombre LIKE '%$filtro%' OR DNI = '$filtro'"</span>;
+    }
+    $sql .= <span class="c-str">" LIMIT $limite"</span>;
+    <span class="c-comment">// ... Ejecución y retorno</span>
+  }
+}</code></pre>
+      </div>
 
-        <div
-          class="flex flex-col md:flex-row justify-center items-center gap-6 mb-12"
-        >
-          <a
-            href="mailto:caravacaoscar@gmail.com"
-            class="flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-3 lg:px-5 lg:py-3 bg-primary-600 hover:bg-primary-700 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-2 border-transparent hover:border-primary-400 text-center"
-          >
-            <span class="text-xl sm:text-3xl lg:text-xl text-primary-500"
-              >📧</span
-            >
-            <span
-              class="text-base sm:text-lg lg:text-sm text-gray-800 font-semibold"
-              >caravacaoscar@gmail.com</span
-            >
-          </a>
-          <a
-            href="tel:685360295"
-            class="flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-4 lg:px-4 lg:py-3 bg-primary-600 hover:bg-primary-700 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-2 border-transparent hover:border-primary-400 text-center"
-          >
-            <span class="text-2xl sm:text-3xl lg:text-xl text-primary-500"
-              >📞</span
-            >
-            <span
-              class="text-base sm:text-lg lg:text-sm text-gray-800 font-semibold"
-              >685 360 295</span
-            >
-          </a>
-        </div>
+      <div class="proyecto-links">
+        <a href="#" class="btn-primary" style="font-size:13px; padding:8px 18px;">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Demo en Vivo
+        </a>
+        <a href="https://github.com/oscarcr27" target="_blank" rel="noopener" class="btn-ghost" style="font-size:13px; padding:8px 18px;">
+          <i class="fa-brands fa-github"></i> Ver en GitHub
+        </a>
+      </div>
+    </div>
 
-        <div class="text-center">
-          <p class="text-gray-500 text-sm">
-            © 2025 Óscar Caravaca. Todos los derechos reservados.
-          </p>
+    <!-- PROYECTO 3 -->
+    <div class="proyecto-card">
+      <!-- TODO: Sustituir por una captura real de la web del restaurante -->
+      <img
+        src="REEMPLAZA_CON_CAPTURA_RESTAURANTE.png"
+        alt="Captura de la web de restaurante La Taberna del Sur"
+        class="proyecto-img"
+      />
+      <div class="proyecto-header">
+        <div class="proyecto-top">
+          <div>
+            <span class="proyecto-status">
+              <i class="fa-solid fa-circle-check"></i> Proyecto Finalizado
+            </span>
+            <h3 class="proyecto-title">Web para Restaurante</h3>
+            <p class="proyecto-desc">
+              Página web completa para un restaurante de cocina española, con hero a pantalla completa, historia del local, menú interactivo organizado por categorías, formulario de reservas online con validación y sección de contacto. Diseño totalmente responsive con animaciones al hacer scroll.
+            </p>
+          </div>
         </div>
       </div>
-    </footer>
 
-    <script>
-      // Navbar scroll effect
-      const navbar = document.getElementById("navbar");
-      window.addEventListener("scroll", () => {
-        if (window.scrollY > 50) {
-          navbar.classList.add("navbar-scrolled");
-        } else {
-          navbar.classList.remove("navbar-scrolled");
-        }
-      });
+      <div class="proyecto-stack">
+        <span class="stack-tag"><i class="fa-brands fa-html5" style="color:#e34c26;"></i> HTML5</span>
+        <span class="stack-tag"><i class="fa-brands fa-css3-alt" style="color:#264de4;"></i> CSS3</span>
+        <span class="stack-tag"><i class="fa-brands fa-js" style="color:#f7df1e;"></i> JavaScript</span>
+        <span class="stack-tag"><i class="fa-brands fa-font-awesome" style="color:#528dd7;"></i> Font Awesome</span>
+      </div>
 
-      // Mobile menu toggle
-      const mobileMenuBtn = document.getElementById("mobile-menu-btn");
-      const mobileMenu = document.getElementById("mobile-menu");
+      <div class="proyecto-code">
+        <div class="code-header">
+          <span class="code-filename"><i class="fa-solid fa-file-code"></i> reservas.js</span>
+          <button class="code-copy" onclick="copySnippet(this)" title="Copiar código">
+            <i class="fa-regular fa-copy"></i> Copiar
+          </button>
+        </div>
+        <pre class="code-block"><code><span class="c-comment">// Sistema de pestañas del menú + envío de reservas</span>
+<span class="c-keyword">function</span> <span class="c-fn">cambiarTab</span>(btn, panel) {
+  document.<span class="c-fn">querySelectorAll</span>(<span class="c-str">'.menu-tab'</span>).<span class="c-fn">forEach</span>(t => t.classList.<span class="c-fn">remove</span>(<span class="c-str">'active'</span>));
+  document.<span class="c-fn">querySelectorAll</span>(<span class="c-str">'.menu-panel'</span>).<span class="c-fn">forEach</span>(p => p.classList.<span class="c-fn">remove</span>(<span class="c-str">'active'</span>));
+  btn.classList.<span class="c-fn">add</span>(<span class="c-str">'active'</span>);
+  document.<span class="c-fn">getElementById</span>(panel).classList.<span class="c-fn">add</span>(<span class="c-str">'active'</span>);
+}
 
-      mobileMenuBtn.addEventListener("click", () => {
-        mobileMenu.classList.toggle("active");
-      });
+<span class="c-keyword">function</span> <span class="c-fn">enviarReserva</span>(e) {
+  e.<span class="c-fn">preventDefault</span>();
+  <span class="c-comment">// Muestra confirmación al usuario tras enviar el formulario</span>
+  document.<span class="c-fn">getElementById</span>(<span class="c-str">'formReserva'</span>).style.display = <span class="c-str">'none'</span>;
+  document.<span class="c-fn">getElementById</span>(<span class="c-str">'formSuccess'</span>).style.display = <span class="c-str">'block'</span>;
+}</code></pre>
+      </div>
 
-      // Close mobile menu when clicking a link
-      const mobileLinks = mobileMenu.querySelectorAll("a");
-      mobileLinks.forEach((link) => {
-        link.addEventListener("click", () => {
-          mobileMenu.classList.remove("active");
-        });
-      });
+      <div class="proyecto-links">
+        <a href="#" class="btn-primary" style="font-size:13px; padding:8px 18px;">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Demo en Vivo
+        </a>
+        <a href="https://github.com/oscarcr27" target="_blank" rel="noopener" class="btn-ghost" style="font-size:13px; padding:8px 18px;">
+          <i class="fa-brands fa-github"></i> Ver en GitHub
+        </a>
+      </div>
+    </div>
 
-      // Scroll reveal animation
-      const scrollRevealElements = document.querySelectorAll(".scroll-reveal");
+  </div>
+</section>
 
-      const revealOnScroll = () => {
-        scrollRevealElements.forEach((el) => {
-          const elementTop = el.getBoundingClientRect().top;
-          const windowHeight = window.innerHeight;
+<style>
+  .proyectos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
 
-          if (elementTop < windowHeight - 100) {
-            el.classList.add("active");
-          }
-        });
-      };
+  .proyecto-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: calc(var(--radius) - 2px);
+    border: 1px solid var(--border);
+  }
 
-      window.addEventListener("scroll", revealOnScroll);
-      revealOnScroll(); // Initial check
+  .proyecto-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    transition: border-color 0.2s, transform 0.15s;
+  }
 
-      // Smooth scroll for anchor links
-      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-        anchor.addEventListener("click", function (e) {
-          e.preventDefault();
-          const target = document.querySelector(this.getAttribute("href"));
-          if (target) {
-            target.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }
-        });
-      });
-    </script>
-  </body>
+  .proyecto-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .proyecto-status {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--green);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 8px;
+  }
+
+  .proyecto-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .proyecto-desc {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  .proyecto-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .stack-tag {
+    font-size: 12px;
+    font-family: var(--mono);
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: var(--bg3);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .proyecto-code {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+  }
+
+  .code-filename {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .code-copy {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text3);
+    font-size: 11px;
+    font-family: var(--mono);
+    padding: 3px 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .code-copy:hover { color: var(--accent); border-color: var(--accent); }
+
+  .code-block {
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.7;
+    padding: 14px;
+    overflow-x: auto;
+    overflow-y: auto;
+    margin: 0;
+    color: var(--text2);
+    height: 180px;
+  }
+
+  .c-keyword { color: #c792ea; }
+  .c-fn      { color: #82aaff; }
+  .c-str     { color: #c3e88d; }
+  .c-comment { color: #546e7a; font-style: italic; }
+
+  .proyecto-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+</style>
+
+<!-- FORMACIÓN -->
+<section id="formacion">
+  <p class="section-label">Educación</p>
+  <h2>Formación Académica</h2>
+  <div class="divider"></div>
+
+  <div class="edu-list">
+    <div class="edu-card">
+      <div>
+        <p class="edu-title">Grado Superior en Desarrollo de Aplicaciones Web</p>
+        <p class="edu-center">MEDAC</p>
+      </div>
+      <span class="edu-date">En curso</span>
+    </div>
+    <div class="edu-card">
+      <div>
+        <p class="edu-title">Grado Medio — Técnico en Sistemas Microinformáticos y Redes</p>
+        <p class="edu-center">IES Mario López</p>
+      </div>
+      <span class="edu-date">2013 – 2015</span>
+    </div>
+    <div class="edu-card">
+      <div>
+        <p class="edu-title">Educación Secundaria Obligatoria (ESO)</p>
+        <p class="edu-center">IES Sácilis</p>
+      </div>
+      <span class="edu-date">2009 – 2013</span>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<div id="contacto">
+  <div class="contact-inner">
+    <p class="section-label">¿Hablamos?</p>
+    <h2>Contacto</h2>
+    <div class="divider"></div>
+
+    <div class="contact-grid">
+      <div>
+        <p class="contact-desc">
+          Técnico informático y desarrollador web con disponibilidad inmediata.
+          Estoy abierto a nuevas oportunidades, proyectos freelance o simplemente a charlar sobre tecnología.
+        </p>
+        <div class="contact-links">
+          <a href="mailto:caravacaoscar@gmail.com" class="contact-link">
+            <div class="contact-link-icon"><i class="fa-solid fa-envelope"></i></div>
+            caravacaoscar@gmail.com
+          </a>
+          <a href="https://linkedin.com/in/YOUR_USERNAME" target="_blank" rel="noopener" class="contact-link">
+            <div class="contact-link-icon"><i class="fa-brands fa-linkedin"></i></div>
+            LinkedIn
+          </a>
+          <a href="https://github.com/oscarcr27" target="_blank" rel="noopener" class="contact-link">
+            <div class="contact-link-icon"><i class="fa-brands fa-github"></i></div>
+            GitHub
+          </a>
+          <a href="assets/cv/Currículum Óscar Caravaca.pdf" download class="contact-link">
+            <div class="contact-link-icon"><i class="fa-solid fa-file-arrow-down"></i></div>
+            Descargar CV
+          </a>
+        </div>
+      </div>
+
+      <form class="contact-form" onsubmit="handleSubmit(event)">
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" placeholder="Tu nombre" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="tu@email.com" required />
+        </div>
+        <div class="form-group">
+          <label for="mensaje">Mensaje</label>
+          <textarea id="mensaje" placeholder="Cuéntame en qué puedo ayudarte..." required></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="width:fit-content;">Enviar mensaje →</button>
+        <p id="form-status" style="font-size:13px; color:var(--green); display:none;">✓ Mensaje enviado correctamente</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Óscar Caravaca · Hecho con HTML &amp; CSS · Córdoba, España</p>
+</footer>
+
+<script>
+  function copySnippet(btn) {
+    const code = btn.closest('.proyecto-code').querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Copiado';
+      setTimeout(() => btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copiar', 2000);
+    });
+  }
+
+  function toggleMenu() {
+    const links = document.querySelector('.nav-links');
+    if (links.style.display === 'flex') {
+      links.style.display = 'none';
+    } else {
+      links.style.cssText = 'display:flex; flex-direction:column; position:fixed; top:60px; left:0; right:0; background:rgba(15,17,23,0.97); padding:1.5rem 2rem; gap:1rem; border-bottom:1px solid #2a3347;';
+    }
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.textContent = 'Enviando...';
+    btn.disabled = true;
+    setTimeout(() => {
+      document.getElementById('form-status').style.display = 'block';
+      btn.textContent = 'Enviado ✓';
+    }, 800);
+  }
+
+  // Highlight active nav link on scroll
+  const sections = document.querySelectorAll('section[id], div[id="contacto"]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--text)' : '';
+    });
+  });
+</script>
+
+</body>
 </html>
