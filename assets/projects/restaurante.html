@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>La Taberna del Sur | Restaurante Español</title>
+    <title>La Taberna | Restaurante Español</title>
     <meta
       name="description"
       content="Auténtica cocina española en el corazón de Córdoba. Tapas, raciones y vinos de la tierra. Reserva tu mesa ahora."
@@ -1003,7 +1003,7 @@
   </head>
   <body>
     <nav>
-      <a href="#inicio" class="nav-logo">La Taberna del Sur</a>
+      <a href="#inicio" class="nav-logo">Restaurante</a>
       <ul class="nav-links">
         <li><a href="#nosotros">Nosotros</a></li>
         <li><a href="#menu">Menú</a></li>
@@ -1059,19 +1059,27 @@
           </p>
           <div class="nosotros-stats">
             <div class="stat">
-              <div class="stat-num">+37</div>
+              <div class="stat-num">
+                +<span class="num-animado" data-target="37">0</span>
+              </div>
               <div class="stat-label">Años abiertos</div>
             </div>
             <div class="stat">
-              <div class="stat-num">48</div>
+              <div class="stat-num">
+                <span class="num-animado" data-target="48">0</span>
+              </div>
               <div class="stat-label">Platos en carta</div>
             </div>
             <div class="stat">
-              <div class="stat-num">100%</div>
+              <div class="stat-num">
+                <span class="num-animado" data-target="100">0</span>%
+              </div>
               <div class="stat-label">Producto local</div>
             </div>
             <div class="stat">
-              <div class="stat-num">3ª</div>
+              <div class="stat-num">
+                <span class="num-animado" data-target="3">0</span>ª
+              </div>
               <div class="stat-label">Generación</div>
             </div>
           </div>
@@ -1079,7 +1087,7 @@
         <div class="nosotros-img-wrap reveal reveal-delay-1">
           <img
             src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80"
-            alt="Interior de La Taberna del Sur"
+            alt="Interior de La Taberna"
             class="nosotros-img"
           />
         </div>
@@ -1778,14 +1786,14 @@
           <i class="fa-solid fa-phone"></i>
           <div class="contacto-card-titulo">Teléfono</div>
           <div class="contacto-card-texto">
-            957 00 00 00<br />tabernasur@email.com<br />WhatsApp disponible
+            957 00 00 00<br />taberna@email.com<br />WhatsApp disponible
           </div>
         </div>
         <div class="contacto-card">
           <i class="fa-brands fa-instagram"></i>
           <div class="contacto-card-titulo">Síguenos</div>
           <div class="contacto-card-texto">
-            @latabernadelcor<br />Facebook: La Taberna del Sur<br />TripAdvisor
+            @lataberna<br />Facebook: La Taberna<br />TripAdvisor
             ⭐⭐⭐⭐⭐
           </div>
         </div>
@@ -1793,14 +1801,59 @@
     </section>
 
     <footer>
-      <div class="footer-logo">La Taberna del Sur</div>
+      <div class="footer-logo">Restaurante español</div>
       <p class="footer-texto">
-        © 2026 La Taberna del Sur · Córdoba, España · Desarrollado por Óscar
+        © 2026 Restaurante español · Córdoba, España · Desarrollado por Óscar
         Caravaca
       </p>
     </footer>
 
     <script>
+      // Función para animar los números corriendo
+      function animarContadores() {
+        const contadores = document.querySelectorAll(".num-animado");
+        const velocidad = 40; // Cuanto menor sea el número, más rápido correrán los contadores
+
+        contadores.forEach((contador) => {
+          const actualizarContador = () => {
+            const target = +contador.getAttribute("data-target"); // Valor final (+ lo convierte a número)
+            const valorActual = +contador.innerText; // Valor en el que va actualmente
+
+            // Calculamos el incremento dinámico según el tamaño del número
+            const incremento = Math.ceil(target / velocidad);
+
+            if (valorActual < target) {
+              // Aseguramos que no se pase del número máximo asignado
+              contador.innerText = Math.min(valorActual + incremento, target);
+              // Llama a la función continuamente cada milisegundo hasta llegar al objetivo
+              setTimeout(actualizarContador, 25);
+            } else {
+              contador.innerText = target;
+            }
+          };
+
+          actualizarContador();
+        });
+      }
+
+      // Integración con el observador de Scroll (IntersectionObserver) para activarlo al verlo
+      const rereservasObserver = new IntersectionObserver(
+        (entries, observer) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              animarContadores(); // Disparar la animación de los números
+              observer.unobserve(entry.target); // Dejar de observar para que solo ocurra una vez
+            }
+          });
+        },
+        { threshold: 0.3 },
+      ); // Se activa cuando el 30% de las estadísticas es visible
+
+      // Empezamos a escuchar el contenedor de las estadísticas
+      const selectorStats = document.querySelector(".nosotros-stats");
+      if (selectorStats) {
+        rereservasObserver.observe(selectorStats);
+      }
       // Cambiar entre pestañas de platos
       function cambiarTab(btn, panel) {
         document
