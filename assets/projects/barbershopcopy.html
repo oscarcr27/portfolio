@@ -1474,6 +1474,8 @@
       <span class="footer-copy">Política de privacidad · Aviso legal</span>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script>
       // ── CONTROL DE NAV TRANSPARENTE EN SCROLL ──
       const nav = document.getElementById("mainNav");
@@ -1526,17 +1528,18 @@
 
       function buildReviews() {
         const track = document.getElementById("reviewsTrack");
+        if (!track) return;
         const doubled = [...reviews, ...reviews];
         track.innerHTML = doubled
           .map(
             (r) => `
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <div class="review-text">"${r.text}"</div>
-        <div class="review-author">${r.author}</div>
-        <div class="review-date">${r.date}</div>
-      </div>
-    `,
+            <div class="review-card">
+              <div class="review-stars">★★★★★</div>
+              <div class="review-text">"${r.text}"</div>
+              <div class="review-author">${r.author}</div>
+              <div class="review-date">${r.date}</div>
+            </div>
+          `,
           )
           .join("");
       }
@@ -1568,17 +1571,18 @@
 
       function buildFaq() {
         const list = document.getElementById("faqList");
+        if (!list) return;
         list.innerHTML = faqs
           .map(
             (f, i) => `
-      <div class="faq-item" id="faq-${i}">
-        <button class="faq-question" onclick="toggleFaq(${i})">
-          ${f.q}
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">${f.a}</div>
-      </div>
-    `,
+            <div class="faq-item" id="faq-${i}">
+              <button class="faq-question" onclick="toggleFaq(${i})">
+                ${f.q}
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">${f.a}</div>
+            </div>
+          `,
           )
           .join("");
       }
@@ -1593,75 +1597,6 @@
         if (!isOpen) item.classList.add("open");
       }
 
-      // ── CONTROL DE RESERVAS ──
-      let selectedTimeSlot = null;
-
-      function selectSlot(el) {
-        if (el.classList.contains("taken")) return;
-        document
-          .querySelectorAll(".slot")
-          .forEach((s) => s.classList.remove("selected"));
-        el.classList.add("selected");
-        selectedTimeSlot = el.innerText;
-      }
-
-      function updateSummary() {
-        const select = document.getElementById("formService");
-        const selectedOption = select.options[select.selectedIndex];
-        const box = document.getElementById("summaryBox");
-
-        if (selectedOption.value === "") {
-          box.style.display = "none";
-          return;
-        }
-
-        const price = selectedOption.getAttribute("data-price");
-        const time = selectedOption.getAttribute("data-time");
-
-        document.getElementById("summaryPrice").innerText = price + "€";
-        document.getElementById("summaryTime").innerText = time + " min";
-        box.style.display = "flex";
-      }
-
-      function handleFormSubmit(event) {
-        event.preventDefault();
-
-        const name = document.getElementById("formName").value;
-        const service = document.getElementById("formService").value;
-        const barber = document.getElementById("formBarber").value;
-        const date = document.getElementById("formDate").value;
-        const btn = document.getElementById("submitBtn");
-
-        if (!selectedTimeSlot) {
-          alert("Por favor, selecciona una hora disponible para tu cita.");
-          return;
-        }
-
-        // Feedback visual de carga simulada
-        btn.innerText = "Procesando...";
-        btn.disabled = true;
-
-        setTimeout(() => {
-          alert(
-            `¡Reserva confirmada, ${name}!\n\nServicio: ${service}\nBarbero: ${barber}\nFecha: ${date}\nHora: ${selectedTimeSlot} hs.\n\nTe esperamos en Carrer de Provença 88.`,
-          );
-
-          // Resetear formulario
-          document.getElementById("appointmentForm").reset();
-          document.getElementById("summaryBox").style.display = "none";
-          document
-            .querySelectorAll(".slot")
-            .forEach((s) => s.classList.remove("selected"));
-          selectedTimeSlot = null;
-          btn.innerText = "Confirmar reserva →";
-          btn.disabled = false;
-        }, 1200);
-      }
-
-      // Restringir el calendario para que no se puedan elegir fechas pasadas
-      const today = new Date().toISOString().split("T")[0];
-      document.getElementById("formDate").setAttribute("min", today);
-
       // ── SCROLL REVEAL ──
       const observer = new IntersectionObserver(
         (entries) => {
@@ -1675,15 +1610,23 @@
         .querySelectorAll(".reveal")
         .forEach((el) => observer.observe(el));
 
-      // CONFIGURACIÓN DE SUPABASE
+      // ── CONFIGURACIÓN E INICIALIZACIÓN DE SUPABASE ──
       const SUPABASE_URL = "https://qfsweuyjqiisylrgupth.supabase.co";
       const SUPABASE_ANON_KEY =
         "sb_publishable_VZf38mBFRj5kUUcTGvRCRA_Sby2ar6d";
       const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-      // Configurar fecha mínima (hoy)
-      const dateInput = document.getElementById("date");
-      dateInput.min = new Date().toISOString().split("T")[0];
+      // Vinculamos las variables con tus IDs reales del formulario viejo
+      const dateInput = document.getElementById("formDate");
+      const barberSelect = document.getElementById("formBarber");
+      const serviceSelect = document.getElementById("formService");
+      const container =
+        document.getElementById("slots-container") ||
+        document.getElementById("reviewsTrack"); // Ajusta al ID de tu contenedor de horas si tienes uno dedicado para renderizar botones
+
+      // Forzar que el calendario no elija días pasados
+      const todayISO = new Date().toISOString().split("T")[0];
+      if (dateInput) dateInput.min = todayISO;
 
       const horasDisponibles = [
         "09:00",
@@ -1698,48 +1641,63 @@
       ];
       let horaSeleccionada = null;
 
-      // Escuchar cambios de fecha o barbero para actualizar los huecos libres
-      dateInput.addEventListener("change", checkAvailability);
-      document
-        .getElementById("barber")
-        .addEventListener("change", checkAvailability);
+      // Actualizar resumen de precio y tiempo al cambiar servicio
+      if (serviceSelect) {
+        serviceSelect.addEventListener("change", () => {
+          const selectedOption =
+            serviceSelect.options[serviceSelect.selectedIndex];
+          const box = document.getElementById("summaryBox");
+          if (!box) return;
+
+          if (selectedOption.value === "") {
+            box.style.display = "none";
+            return;
+          }
+          const price = selectedOption.getAttribute("data-price");
+          const time = selectedOption.getAttribute("data-time");
+          document.getElementById("summaryPrice").innerText = price + "€";
+          document.getElementById("summaryTime").innerText = time + " min";
+          box.style.display = "flex";
+        });
+      }
+
+      // Escuchar cambios de fecha o barbero para actualizar disponibilidad real
+      if (dateInput) dateInput.addEventListener("change", checkAvailability);
+      if (barberSelect)
+        barberSelect.addEventListener("change", checkAvailability);
 
       async function checkAvailability() {
         const fecha = dateInput.value;
-        const barbero = document.getElementById("barber").value;
-        const container = document.getElementById("slots-container");
-        container.innerHTML = "";
+        const barbero = barberSelect.value;
+
+        // Si usas un contenedor visual para las horas como botones dinámicos
+        const slotsBox = document.getElementById("slots-container");
+        if (!slotsBox || !fecha) return;
+
+        slotsBox.innerHTML = "";
         horaSeleccionada = null;
 
-        if (!fecha) return;
-
-        // 1. Consultar la VISTA PÚBLICA que creaste en tu script SQL
         let query = sb
           .from("public_availability")
           .select("reservation_time, barber")
           .eq("reservation_date", fecha);
-
         const { data: ocupados, error } = await query;
         if (error) return console.error(error);
 
-        // 2. Renderizar los botones de horas
         horasDisponibles.forEach((hora) => {
           const btn = document.createElement("button");
           btn.type = "button";
-          btn.className = "slot-btn";
+          btn.className = "slot-btn"; // Recuerda darles estilo CSS (.slot-btn, .slot-btn.occupied, .slot-btn.selected)
           btn.textContent = hora;
 
-          // Verificar si esta hora concreta está completamente llena o bloqueada para el barbero seleccionado
           const coincidencia = ocupados.filter(
             (o) => o.reservation_time.slice(0, 5) === hora,
           );
-
           let estaOcupado = false;
-          if (barbero === "Cualquiera") {
-            // Si se selecciona "Cualquiera", está ocupado solo si los 3 barberos están llenos a esa hora
+
+          if (barbero === "Cualquiera" || barbero === "") {
             if (coincidencia.length >= 3) estaOcupado = true;
           } else {
-            // Si se elige un barbero concreto, está ocupado si ese barbero ya tiene cita
             estaOcupado = coincidencia.some((o) => o.barber === barbero);
           }
 
@@ -1755,33 +1713,42 @@
               horaSeleccionada = hora;
             });
           }
-          container.appendChild(btn);
+          slotsBox.appendChild(btn);
         });
       }
 
-      // Enviar la reserva mediante la función RPC segura
-      document
-        .getElementById("btn-submit")
-        .addEventListener("click", async () => {
-          const nombre = document.getElementById("client_name").value;
-          const telefono = document.getElementById("client_phone").value;
-          const servicio = document.getElementById("service").value;
-          const barbero = document.getElementById("barber").value;
-          const fecha = dateInput.value;
+      // Interceptamos el envío del formulario nativo para procesarlo con Supabase
+      const appointmentForm = document.getElementById("appointmentForm");
+      if (appointmentForm) {
+        appointmentForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
 
-          if (!nombre || !telefono || !fecha || !horaSeleccionada) {
-            alert("Por favor rellena todos los datos y selecciona una hora.");
+          const nombre = document.getElementById("formName").value;
+          const telefono = document.getElementById("formPhone")
+            ? document.getElementById("formPhone").value
+            : "No indicado"; // Asegura que el campo teléfono exista en tu HTML o añade id="formPhone"
+          const servicio = serviceSelect.value;
+          const barbero = barberSelect.value || "Cualquiera";
+          const fecha = dateInput.value;
+          const btnSubmit = document.getElementById("submitBtn");
+
+          if (!horaSeleccionada) {
+            alert(
+              "Por favor, selecciona una hora disponible haciendo clic en los botones de horarios.",
+            );
             return;
           }
 
-          // Llamar a tu función "create_reservation" mediante RPC
+          btnSubmit.innerText = "Procesando...";
+          btnSubmit.disabled = true;
+
           const { data, error } = await sb.rpc("create_reservation", {
             p_name: nombre,
             p_phone: telefono,
             p_service: servicio,
-            p_barber: barbero,
+            p_barber: barbero === "" ? "Cualquiera" : barbero,
             p_date: fecha,
-            p_time: horaSeleccionada + ":00", // Formato TIME para Postgres (HH:MM:SS)
+            p_time: horaSeleccionada + ":00",
           });
 
           if (error) {
@@ -1792,20 +1759,28 @@
             } else if (error.message.includes("no_availability")) {
               alert("No hay barberos disponibles en este horario.");
             } else {
-              alert("Error: " + error.message);
+              alert("Error al reservar: " + error.message);
             }
+            btnSubmit.innerText = "Confirmar reserva →";
+            btnSubmit.disabled = false;
             checkAvailability();
             return;
           }
 
           alert(
-            `¡Cita confirmada!\nBarbero: ${data[0].assigned_barber}\nEstado: ${data[0].new_status}`,
+            `¡Reserva confirmada, ${nombre}!\n\nBarbero asignado: ${data[0].assigned_barber}\nFecha: ${fecha}\nHora: ${horaSeleccionada} hs.\n\nTe esperamos en Carrer de Provença 88.`,
           );
-          // Limpiar formulario
-          document.getElementById("client_name").value = "";
-          document.getElementById("client_phone").value = "";
+
+          // Resetear interfaz tras el éxito
+          appointmentForm.reset();
+          const summaryBox = document.getElementById("summaryBox");
+          if (summaryBox) summaryBox.style.display = "none";
+          horaSeleccionada = null;
+          btnSubmit.innerText = "Confirmar reserva →";
+          btnSubmit.disabled = false;
           checkAvailability();
         });
+      }
     </script>
   </body>
 </html>
