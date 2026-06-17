@@ -222,7 +222,7 @@
 
     /* ── SECTIONS ── */
     section {
-      padding: 5rem 2rem;
+      padding: 3rem 2rem;
       max-width: 1000px;
       margin: 0 auto;
     }
@@ -239,7 +239,7 @@
     h2 {
       font-size: clamp(1.4rem, 3vw, 2rem);
       font-weight: 700;
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
       letter-spacing: -0.02em;
     }
 
@@ -248,7 +248,7 @@
       height: 3px;
       background: linear-gradient(90deg, var(--accent), var(--accent2));
       border-radius: 2px;
-      margin-bottom: 3rem;
+      margin: 2rem 0;
     }
 
     /* ── EXPERIENCIA ── */
@@ -699,4 +699,18 @@
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
+  }
+
+  /* 1. Ocultar la barra en la caja del pre (Chrome, Safari, Edge, Opera) */
+  .code-block::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 2. Ocultar la barra para Firefox e IE/Edge antiguo */
+  .code-block {
+    -ms-overflow-style: none;  /* IE y Edge */
+    scrollbar-width: none;     /* Firefox */
+    
+    /* Asegura que el código siga siendo deslizable aunque no se vea la barra */
+    overflow: auto; 
   }
