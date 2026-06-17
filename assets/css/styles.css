@@ -183,6 +183,7 @@
       font-size: 14px;
       font-weight: 600;
       transition: opacity 0.2s, transform 0.15s;
+      border: 1px solid var(--border);
     }
 
     .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
@@ -337,7 +338,7 @@
     }
 
     .skill-card:hover {
-      border-color: var(--accent);
+      border-color: var(--border);
       transform: translateY(-2px);
     }
 
@@ -589,7 +590,7 @@
   }
 
   .proyecto-card:hover {
-    border-color: var(--accent);
+    border-color: var(--border);
     transform: translateY(-2px);
   }
 

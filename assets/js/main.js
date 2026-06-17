@@ -16,15 +16,45 @@ function copySnippet(btn) {
   }
 
   function handleSubmit(e) {
-    e.preventDefault();
-    const btn = e.target.querySelector('button[type="submit"]');
-    btn.textContent = 'Enviando...';
-    btn.disabled = true;
-    setTimeout(() => {
-      document.getElementById('form-status').style.display = 'block';
+  e.preventDefault();
+  
+  const btn = e.target.querySelector('button[type="submit"]');
+  const statusMessage = document.getElementById('form-status');
+  
+  // Cambiar estado del botón
+  btn.textContent = 'Enviando...';
+  btn.disabled = true;
+
+  // Capturar todos los datos del formulario automáticamente
+  const formData = new FormData(e.target);
+
+  // Enviar los datos a la API
+  fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => {
+    if (response.ok) {
+      // Éxito
+      statusMessage.style.display = 'block';
+      statusMessage.style.color = 'var(--green)';
+      statusMessage.textContent = '✓ Mensaje enviado correctamente';
       btn.textContent = 'Enviado ✓';
-    }, 800);
-  }
+      e.target.reset(); // Limpia los campos del formulario
+    } else {
+      // Error de la API
+      throw new Error('Error en el servidor');
+    }
+  })
+  .catch(error => {
+    // Error de red o cualquier otro problema
+    statusMessage.style.display = 'block';
+    statusMessage.style.color = 'red';
+    statusMessage.textContent = '✕ Hubo un error, inténtalo de nuevo.';
+    btn.textContent = 'Enviar mensaje →';
+    btn.disabled = false;
+  });
+}
 
   // Highlight active nav link on scroll
   const sections = document.querySelectorAll('section[id], div[id="contacto"]');
