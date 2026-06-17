@@ -176,63 +176,76 @@
       async function checkAvailability() {
         const fecha = dateInput.value;
         const barbero = barberSelect.value;
-
-        if (!slotsBox || !fecha) return; // Aquí el return es 100% legal
-
-        slotsBox.innerHTML = "";
+        
+        if (!slotsBox || !fecha) return;
+        
+        slotsBox.innerHTML = ""; // Limpiamos las horas anteriores
         horaSeleccionada = null;
 
-        // Obtener fecha de hoy local y hora actual en formato HH:MM
-        const hoyLocal = new Date().toLocaleDateString("sv-SE");
+        // 1. COMPROBAR SI ES LUNES O DOMINGO
+        const objetoFecha = new Date(fecha + "T00:00:00"); // Forzamos zona horaria local
+        const diaSemana = objetoFecha.getDay(); // 0 = Domingo, 1 = Lunes
+
+        if (diaSemana === 0 || diaSemana === 1) {
+            // Creamos un aviso elegante de que está cerrado
+            const avisoCerrado = document.createElement("div");
+            avisoCerrado.style.gridColumn = "1 / -1"; // Ocupa todo el ancho del contenedor
+            avisoCerrado.style.textAlign = "center";
+            avisoCerrado.style.color = "#a89880"; // Color grisáceo/dorado de tu diseño
+            avisoCerrado.style.fontStyle = "italic";
+            avisoCerrado.style.padding = "1rem";
+            avisoCerrado.innerHTML = "<strong>Establecimiento cerrado.</strong><br>Nuestro horario es de Martes a Sábado.";
+            
+            slotsBox.appendChild(avisoCerrado);
+            return; // Frenamos la función aquí para que no cargue horas
+        }
+
+        // 2. OBTENER FECHA DE HOY LOCAL Y HORA ACTUAL (Tu lógica existente)
+        const hoyLocal = new Date().toLocaleDateString("sv-SE"); 
         const ahora = new Date();
-        const horaActualStr = `${String(ahora.getHours()).padStart(2, "0")}:${String(ahora.getMinutes()).padStart(2, "0")}`;
+        const horaActualStr = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
 
-        // Consultar huecos ocupados en Supabase
+        // Consultar huecos ocupados en Supabase (Solo se ejecuta de martes a sábado)
         let { data: ocupados, error } = await sb
-          .from("public_availability")
-          .select("reservation_time, barber")
-          .eq("reservation_date", fecha);
-
-        if (error)
-          return console.error("Error consultando disponibilidad:", error);
+            .from("public_availability")
+            .select("reservation_time, barber")
+            .eq("reservation_date", fecha);
+            
+        if (error) return console.error("Error consultando disponibilidad:", error);
 
         // Renderizar las horas de forma dinámica
         horasDisponibles.forEach((hora) => {
-          const divSlot = document.createElement("div");
-          divSlot.className = "slot";
-          divSlot.textContent = hora;
+            const divSlot = document.createElement("div");
+            divSlot.className = "slot";
+            divSlot.textContent = hora;
 
-          // Controlar si la hora ya pasó hoy
-          let yaPaso = false;
-          if (fecha === hoyLocal && hora < horaActualStr) {
+            // Controlar si la hora ya pasó hoy
+            let yaPaso = false;
+            if (fecha === hoyLocal && hora < horaActualStr) {
             yaPaso = true;
-          }
+            }
 
-          const coincidencia = ocupados.filter(
-            (o) => o.reservation_time.slice(0, 5) === hora,
-          );
-          let estaOcupado = false;
+            const coincidencia = ocupados.filter(o => o.reservation_time.slice(0, 5) === hora);
+            let estaOcupado = false;
 
-          if (barbero === "Cualquiera") {
+            if (barbero === "Cualquiera") {
             if (coincidencia.length >= 3) estaOcupado = true;
-          } else {
-            estaOcupado = coincidencia.some((o) => o.barber === barbero);
-          }
+            } else {
+            estaOcupado = coincidencia.some(o => o.barber === barbero);
+            }
 
-          if (yaPaso || estaOcupado) {
-            divSlot.classList.add("taken");
-          } else {
+            if (yaPaso || estaOcupado) {
+            divSlot.classList.add("taken"); 
+            } else {
             divSlot.addEventListener("click", () => {
-              document
-                .querySelectorAll(".slot")
-                .forEach((b) => b.classList.remove("selected"));
-              divSlot.classList.add("selected");
-              horaSeleccionada = hora;
+                document.querySelectorAll(".slot").forEach((b) => b.classList.remove("selected"));
+                divSlot.classList.add("selected");
+                horaSeleccionada = hora;
             });
-          }
-          slotsBox.appendChild(divSlot);
+            }
+            slotsBox.appendChild(divSlot);
         });
-      }
+    }
 
       // Interceptar el envío del formulario para guardarlo en la base de datos
       const appointmentForm = document.getElementById("appointmentForm");
