@@ -385,6 +385,7 @@
 
       const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+      // Elementos del DOM
       const loginView = document.getElementById("login-view");
       const dashView = document.getElementById("dash-view");
       const loginForm = document.getElementById("login-form");
@@ -395,11 +396,8 @@
       const rowsContainer = document.getElementById("rows-container");
       const statLine = document.getElementById("stat-line");
 
-      function todayISO() {
-        return new Date().toISOString().slice(0, 10);
-      }
-
       function formatDateLabel(iso) {
+        if (!iso || iso === "Todas las fechas") return "Histórico Completo";
         const d = new Date(iso + "T00:00:00");
         return d.toLocaleDateString("es-ES", {
           weekday: "long",
@@ -428,7 +426,9 @@
         if (session) {
           loginView.style.display = "none";
           dashView.style.display = "block";
-          if (!dateFilter.value) dateFilter.value = todayISO();
+
+          // Dejamos el filtro de fecha vacío al entrar para cargar TODAS las citas
+          dateFilter.value = "";
           loadReservations();
         } else {
           loginView.style.display = "flex";
@@ -436,21 +436,28 @@
         }
       });
 
-      // ---------- Cargar Datos ----------
+      // ---------- Cargar Datos (Histórico Completo / Filtrado) ----------
       async function loadReservations() {
         rowsContainer.innerHTML =
           '<div class="empty-state"><b>Cargando…</b></div>';
-        const date = dateFilter.value || todayISO();
 
-        // Apunta correctamente a "reservations" en minúsculas y plural
+        // Consulta base: Ordenamos cronológicamente por fecha y luego por hora
         let query = sb
           .from("reservations")
           .select("*")
-          .eq("reservation_date", date)
+          .order("reservation_date", { ascending: true })
           .order("reservation_time", { ascending: true });
 
-        if (barberFilter.value) query = query.eq("barber", barberFilter.value);
-        if (statusFilter.value) query = query.eq("status", statusFilter.value);
+        // Filtros dinámicos (solo se aplican si el usuario elige una opción)
+        if (dateFilter.value) {
+          query = query.eq("reservation_date", dateFilter.value);
+        }
+        if (barberFilter.value) {
+          query = query.eq("barber", barberFilter.value);
+        }
+        if (statusFilter.value) {
+          query = query.eq("status", statusFilter.value);
+        }
 
         const { data, error } = await query;
 
@@ -459,7 +466,10 @@
           return;
         }
 
-        renderStats(data, date);
+        const fechaActual = dateFilter.value
+          ? dateFilter.value
+          : "Todas las fechas";
+        renderStats(data, fechaActual);
         renderRows(data);
       }
 
@@ -480,24 +490,26 @@
           const row = document.createElement("div");
           row.className = "row";
           row.innerHTML = `
-            <div class="time">${r.reservation_time.slice(0, 5)}</div>
-            <div class="client"><b>${escapeHtml(r.client_name)}</b><small>${escapeHtml(r.client_phone)}</small></div>
-            <div class="service">${escapeHtml(r.service)}</div>
-            <div class="barber">${escapeHtml(r.barber)}</div>
-            <div>
-              <select class="status-select status-${r.status}" data-id="${r.id}">
-                <option value="pendiente" ${r.status === "pendiente" ? "selected" : ""}>Pendiente</option>
-                <option value="confirmada" ${r.status === "confirmada" ? "selected" : ""}>Confirmada</option>
-                <option value="completada" ${r.status === "completada" ? "selected" : ""}>Completada</option>
-                <option value="cancelada" ${r.status === "cancelada" ? "selected" : ""}>Cancelada</option>
-              </select>
-            </div>
-            <div><button class="del-btn" data-id="${r.id}">Eliminar</button></div>
-          `;
+        <div class="time" style="font-size: 0.9rem; color: #aaa;">
+          ${r.reservation_date.slice(5)} a las ${r.reservation_time.slice(0, 5)}
+        </div>
+        <div class="client"><b>${escapeHtml(r.client_name)}</b><small>${escapeHtml(r.client_phone)}</small></div>
+        <div class="service">${escapeHtml(r.service)}</div>
+        <div class="barber">${escapeHtml(r.barber)}</div>
+        <div>
+          <select class="status-select status-${r.status}" data-id="${r.id}">
+            <option value="pendiente" ${r.status === "pendiente" ? "selected" : ""}>Pendiente</option>
+            <option value="confirmada" ${r.status === "confirmada" ? "selected" : ""}>Confirmada</option>
+            <option value="completada" ${r.status === "completada" ? "selected" : ""}>Completada</option>
+            <option value="cancelada" ${r.status === "cancelada" ? "selected" : ""}>Cancelada</option>
+          </select>
+        </div>
+        <div><button class="del-btn" data-id="${r.id}">Eliminar</button></div>
+      `;
           rowsContainer.appendChild(row);
         });
 
-        // Evento para cambiar de estado (Utiliza IDs en formato string/UUID)
+        // Evento para cambiar de estado
         rowsContainer.querySelectorAll(".status-select").forEach((sel) => {
           sel.addEventListener("change", async (e) => {
             const id = e.target.dataset.id;
@@ -511,7 +523,7 @@
           });
         });
 
-        // Evento eliminar (Soporta UUID)
+        // Evento eliminar
         rowsContainer.querySelectorAll(".del-btn").forEach((btn) => {
           btn.addEventListener("click", async (e) => {
             const id = e.target.dataset.id;
@@ -533,12 +545,12 @@
         return div.innerHTML;
       }
 
-      // ---------- Filtros y Listeners ----------
+      // ---------- Filtros e Inputs Listeners ----------
       dateFilter.addEventListener("change", loadReservations);
       barberFilter.addEventListener("change", loadReservations);
       statusFilter.addEventListener("change", loadReservations);
 
-      // Tiempo real vía Canales de Supabase
+      // Sincronización en Tiempo Real mediante Canales de Supabase
       sb.channel("reservations-watch")
         .on(
           "postgres_changes",
