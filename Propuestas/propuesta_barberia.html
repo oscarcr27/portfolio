@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuesta Web — Barbería · Óscar Caravaca</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f0e8; color: #1a1207; line-height: 1.6; }
+
+  .page { max-width: 780px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* HERO */
+  .hero { background: #1a1207; border-radius: 14px; padding: 3rem 2.5rem 2.5rem; margin-bottom: 2rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: #c9a84c; }
+  .hero-eyebrow { font-size: 10px; letter-spacing: 0.14em; color: #c9a84c; text-transform: uppercase; margin-bottom: 1rem; }
+  .hero-title { font-size: clamp(24px, 4vw, 34px); font-weight: 700; color: #f5f0e8; line-height: 1.2; margin-bottom: 0.5rem; }
+  .hero-title em { font-style: italic; color: #c9a84c; font-weight: 400; }
+  .hero-sub { font-size: 14px; color: #a89880; margin-bottom: 2rem; }
+  .hero-divider { border: none; border-top: 0.5px solid #3a2e1a; margin: 1.5rem 0; }
+  .hero-presented { font-size: 11px; color: #a89880; margin-bottom: 4px; }
+  .hero-name { font-size: 13px; font-weight: 600; color: #f5f0e8; margin-bottom: 2px; }
+  .hero-contact { font-size: 12px; color: #c9a84c; }
+
+  /* SECTIONS */
+  .section { margin-bottom: 2.5rem; }
+  .section-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #a89880; margin-bottom: 10px; }
+  .section-rule { border: none; border-top: 0.5px solid #c9a84c; margin-bottom: 1.25rem; }
+
+  /* INTRO TEXT */
+  .intro { font-size: 14px; color: #4a4035; line-height: 1.7; margin-bottom: 1rem; }
+  .bullet-list { list-style: none; }
+  .bullet-list li { font-size: 13.5px; color: #4a4035; padding: 4px 0 4px 18px; position: relative; line-height: 1.55; }
+  .bullet-list li::before { content: '•'; position: absolute; left: 0; color: #c9a84c; font-weight: bold; }
+
+  /* FEATURES */
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .feat-card { background: #faf8f4; border: 0.5px solid #e8e0d0; border-radius: 10px; padding: 1.25rem 1rem; }
+  .feat-icon { font-size: 20px; margin-bottom: 8px; }
+  .feat-title { font-size: 13px; font-weight: 600; color: #1a1207; margin-bottom: 4px; }
+  .feat-desc { font-size: 12px; color: #a89880; line-height: 1.55; }
+
+  /* DEMO LINK */
+  .demo-link { background: #faeeda; border: 0.5px solid #c9a84c; border-radius: 8px; padding: 1rem 1.5rem; text-align: center; margin-top: 1rem; }
+  .demo-link span { font-size: 11px; color: #633806; display: block; margin-bottom: 3px; }
+  .demo-link a { font-size: 13px; font-weight: 600; color: #1a1207; text-decoration: none; word-break: break-all; }
+  .demo-link a:hover { color: #c9a84c; }
+
+  /* PROCESS STEPS */
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+  .step { background: #faf8f4; border: 0.5px solid #e8e0d0; border-radius: 10px; padding: 1rem; text-align: center; }
+  .step-num { width: 28px; height: 28px; border-radius: 50%; background: #1a1207; color: #c9a84c; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; }
+  .step-title { font-size: 12px; font-weight: 600; color: #1a1207; margin-bottom: 4px; }
+  .step-desc { font-size: 11px; color: #a89880; line-height: 1.5; }
+
+  /* PRICING */
+  .pricing { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1rem; }
+  @media (max-width: 520px) { .pricing { grid-template-columns: 1fr; } }
+  .price-card { background: #faf8f4; border: 0.5px solid #e8e0d0; border-radius: 10px; padding: 1.5rem; }
+  .price-card.featured { border: 2px solid #c9a84c; }
+  .price-badge { display: inline-block; font-size: 10px; font-weight: 600; color: #633806; background: #faeeda; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; }
+  .price-name { font-size: 15px; font-weight: 700; color: #1a1207; margin-bottom: 4px; }
+  .price-amount { font-size: 26px; font-weight: 700; color: #1a1207; line-height: 1.1; }
+  .price-unit { font-size: 12px; color: #a89880; margin-bottom: 8px; }
+  .price-desc { font-size: 12px; color: #a89880; margin-bottom: 1rem; line-height: 1.5; }
+  .price-items { list-style: none; border-top: 0.5px solid #e8e0d0; }
+  .price-items li { font-size: 12px; color: #4a4035; padding: 5px 0; border-bottom: 0.5px solid #e8e0d0; display: flex; align-items: center; gap: 8px; }
+  .price-items li::before { content: '✓'; color: #c9a84c; font-weight: bold; flex-shrink: 0; }
+
+  /* EXTRAS TABLE */
+  .extras-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .extras-table th { background: #1a1207; color: #f5f0e8; font-size: 11px; font-weight: 600; padding: 8px 12px; text-align: left; }
+  .extras-table td { padding: 8px 12px; color: #4a4035; border-bottom: 0.5px solid #e8e0d0; }
+  .extras-table tr:nth-child(even) td { background: #faf8f4; }
+  .extras-table td:first-child { font-weight: 600; color: #1a1207; }
+  .disclaimer { font-size: 11px; color: #a89880; font-style: italic; margin-top: 8px; }
+
+  /* PANEL PREVIEW */
+  .panel-preview { background: #1a1207; border-radius: 12px; overflow: hidden; margin-top: 1rem; }
+  .panel-header { background: #111009; padding: 14px 20px 10px; border-bottom: 1px solid #c9a84c; }
+  .panel-brand { font-size: 15px; font-weight: 700; color: #f5f0e8; font-style: italic; }
+  .panel-brand span { color: #c9a84c; font-weight: 400; }
+  .panel-stats { font-size: 11px; color: #c9a84c; margin-top: 3px; letter-spacing: 0.03em; }
+  .panel-filters { background: #1f1810; padding: 10px 20px; display: flex; gap: 24px; border-bottom: 0.5px solid #2a2015; }
+  .filter-group { display: flex; align-items: center; gap: 8px; }
+  .filter-label { font-size: 10px; color: #a89880; letter-spacing: 0.08em; }
+  .filter-select { font-size: 12px; color: #f5f0e8; background: #2a2015; border: 0.5px solid #3a2e1a; border-radius: 5px; padding: 4px 10px; display: flex; align-items: center; gap: 6px; }
+  .chevron { color: #a89880; font-size: 13px; }
+  .panel-rows { background: #f5f0e8; margin: 10px 10px 0; border-radius: 8px 8px 0 0; padding: 8px 8px 4px; display: flex; flex-direction: column; gap: 6px; }
+  .booking-row { background: white; border: 0.5px solid #e8e0d0; border-radius: 7px; padding: 10px 14px; display: grid; grid-template-columns: 68px 1fr 1fr 1fr auto auto; align-items: center; gap: 10px; }
+  @media (max-width: 600px) { .booking-row { grid-template-columns: 60px 1fr auto; } .booking-service, .booking-barber, .booking-delete { display: none; } }
+  .booking-date { font-size: 11px; color: #a89880; line-height: 1.5; font-family: monospace; }
+  .booking-name { font-size: 13px; font-weight: 600; color: #1a1207; }
+  .booking-phone { font-size: 11px; color: #a89880; }
+  .booking-service { font-size: 12px; color: #4a4035; }
+  .booking-barber { font-size: 12px; color: #4a4035; }
+  .badge { font-size: 10px; font-weight: 600; padding: 3px 11px; border-radius: 20px; white-space: nowrap; }
+  .badge-pending { background: #faeeda; color: #633806; }
+  .badge-done { background: #eaf3de; color: #27500a; }
+  .badge-confirm { background: #e6f1fb; color: #0c447c; }
+  .booking-delete { font-size: 11px; color: #c9a84c; cursor: default; white-space: nowrap; }
+  .panel-caption { font-size: 10px; color: #a89880; text-align: center; padding: 10px 16px 14px; }
+
+  /* FOOTER CTA */
+  .footer-cta { background: #1a1207; border-radius: 14px; padding: 2.5rem; text-align: center; position: relative; overflow: hidden; margin-top: 2.5rem; }
+  .footer-cta::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: #c9a84c; }
+  .footer-cta-sub { font-size: 12px; color: #a89880; margin-bottom: 6px; }
+  .footer-cta-title { font-size: clamp(16px, 3vw, 22px); font-weight: 700; color: #f5f0e8; margin-bottom: 1.5rem; line-height: 1.35; }
+  .footer-divider { border: none; border-top: 0.5px solid #3a2e1a; margin: 1.5rem auto; max-width: 300px; }
+  .footer-name { font-size: 13px; font-weight: 700; color: #c9a84c; margin-bottom: 4px; }
+  .footer-contact { font-size: 12px; color: #a89880; }
+  .footer-contact a { color: #a89880; text-decoration: none; }
+  .footer-contact a:hover { color: #c9a84c; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Propuesta para tu barbería</div>
+    <h1 class="hero-title">Tu barbería merece una web<br><em>que trabaje por ti.</em></h1>
+    <p class="hero-sub">Reservas online · Panel de barberos · Diseño adaptado a tu negocio</p>
+    <hr class="hero-divider">
+    <div class="hero-presented">Presentado por</div>
+    <div class="hero-name">Óscar Caravaca · Técnico Informático &amp; Desarrollador Web</div>
+    <div class="hero-contact">caravacaoscar@gmail.com · oscarcaravaca.vercel.app · Córdoba, España</div>
+  </div>
+
+  <!-- 1. POR QUÉ -->
+  <div class="section">
+    <div class="section-label">1. ¿Por qué una página web para tu barbería?</div>
+    <hr class="section-rule">
+    <p class="intro">Hoy en día, la mayoría de clientes nuevos buscan información de una barbería en Google o Instagram antes de decidir dónde ir. Una página web profesional con reservas online ayuda a:</p>
+    <ul class="bullet-list">
+      <li>Aparecer en búsquedas como "barbería cerca de mí" o "barbero en [tu ciudad]"</li>
+      <li>Recibir reservas a cualquier hora, sin depender del teléfono</li>
+      <li>Mostrar servicios, precios y equipo de forma clara y siempre actualizada</li>
+      <li>Dar una imagen premium que justifique el precio y fidelice al cliente</li>
+      <li>Que tus barberos gestionen sus citas desde un panel propio, sin papeles ni llamadas</li>
+    </ul>
+  </div>
+
+  <!-- 2. QUÉ INCLUYE -->
+  <div class="section">
+    <div class="section-label">2. Qué incluye la propuesta</div>
+    <hr class="section-rule">
+    <div class="features">
+      <div class="feat-card">
+        <div class="feat-icon">📅</div>
+        <div class="feat-title">Reservas online 24/7</div>
+        <div class="feat-desc">Tus clientes reservan desde el móvil sin necesidad de llamarte. Eligen barbero, servicio, fecha y hora en segundos.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🖥</div>
+        <div class="feat-title">Panel de barberos</div>
+        <div class="feat-desc">Cada barbero accede a su cuaderno de citas, filtra por fecha, cambia estados (Pendiente, Confirmada, Completada) y gestiona reservas.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🎨</div>
+        <div class="feat-title">Diseño a tu imagen</div>
+        <div class="feat-desc">Colores, tipografía, servicios, precios y fotos del equipo — todo adaptado al estilo visual de tu negocio.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📱</div>
+        <div class="feat-title">Perfecta en móvil</div>
+        <div class="feat-desc">La mayoría de tus clientes accederán desde el teléfono. La web funciona al 100% en cualquier dispositivo.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. PANEL -->
+  <div class="section">
+    <div class="section-label">3. Panel de reservas para barberos</div>
+    <hr class="section-rule">
+    <p class="intro">Cada barbero dispone de un panel privado donde puede ver todas las citas, filtrar por día o estado, y gestionar su agenda en tiempo real desde cualquier dispositivo.</p>
+
+    <div class="panel-preview">
+      <!-- Panel header -->
+      <div class="panel-header">
+        <div class="panel-brand">CUTS·BCN <span>— Cuaderno</span></div>
+        <div class="panel-stats">Histórico Completo · 3 reservas · 1 pendiente</div>
+      </div>
+      <!-- Filter bar -->
+      <div class="panel-filters">
+        <div class="filter-group">
+          <span class="filter-label">BARBERO</span>
+          <div class="filter-select">Todos <span class="chevron">›</span></div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">ESTADO</span>
+          <div class="filter-select">Todos <span class="chevron">›</span></div>
+        </div>
+      </div>
+      <!-- Booking rows -->
+      <div class="panel-rows">
+        <div class="booking-row">
+          <div class="booking-date">06-17<br>16:00</div>
+          <div class="booking-client">
+            <div class="booking-name">Juan</div>
+            <div class="booking-phone">234 654 765</div>
+          </div>
+          <div class="booking-service">Afeitado con navaja</div>
+          <div class="booking-barber">David Torres</div>
+          <span class="badge badge-pending">Pendiente</span>
+          <span class="booking-delete">Eliminar</span>
+        </div>
+        <div class="booking-row">
+          <div class="booking-date">06-18<br>17:30</div>
+          <div class="booking-client">
+            <div class="booking-name">Jose</div>
+            <div class="booking-phone">333 564 567</div>
+          </div>
+          <div class="booking-service">Afeitado con navaja</div>
+          <div class="booking-barber">David Torres</div>
+          <span class="badge badge-done">Completada</span>
+          <span class="booking-delete">Eliminar</span>
+        </div>
+        <div class="booking-row">
+          <div class="booking-date">06-18<br>19:30</div>
+          <div class="booking-client">
+            <div class="booking-name">Miguel</div>
+            <div class="booking-phone">065 567 432</div>
+          </div>
+          <div class="booking-service">Corte clásico</div>
+          <div class="booking-barber">Marco Silva</div>
+          <span class="badge badge-confirm">Confirmada</span>
+          <span class="booking-delete">Eliminar</span>
+        </div>
+      </div>
+      <div class="panel-caption">Vista del panel de reservas — accesible para cada barbero desde cualquier dispositivo</div>
+    </div>
+  </div>
+
+  <!-- 4. DEMO -->
+  <div class="section">
+    <div class="section-label">4. Ejemplo de diseño</div>
+    <hr class="section-rule">
+    <p class="intro">Para ilustrar el estilo y la calidad del trabajo, se ha desarrollado una demo completamente funcional de una barbería de ejemplo — CUTS·BCN. Esta misma estructura y nivel de diseño se aplicaría adaptado a la imagen real de tu negocio: tus colores, tus barberos, tus servicios y tus precios.</p>
+    <div class="demo-link">
+      <span>Demo en vivo:</span>
+      <a href="https://oscarcaravaca.vercel.app/assets/projects/barbershopcopy.html" target="_blank">
+        oscarcaravaca.vercel.app/assets/projects/barbershopcopy.html
+      </a>
+    </div>
+  </div>
+
+  <!-- 5. PROCESO -->
+  <div class="section">
+    <div class="section-label">5. Cómo trabajamos</div>
+    <hr class="section-rule">
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Reunión inicial</div>
+        <div class="step-desc">Hablamos sobre estilo, servicios, fotos, precios y el equipo de barberos.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Diseño y desarrollo</div>
+        <div class="step-desc">Creo la web y el panel adaptados a tu negocio en aproximadamente 7 días.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Revisión y ajustes</div>
+        <div class="step-desc">Lo revisamos juntos y hacemos los cambios necesarios hasta quedar conformes.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-title">Publicación</div>
+        <div class="step-desc">La web queda publicada con dominio propio y el panel listo desde el primer día.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. INVERSIÓN -->
+  <div class="section">
+    <div class="section-label">6. Inversión</div>
+    <hr class="section-rule">
+    <div class="pricing">
+      <div class="price-card">
+        <div style="height: 22px;"></div>
+        <div class="price-name">Web básica</div>
+        <div class="price-amount">450 €</div>
+        <div class="price-unit">pago único</div>
+        <div class="price-desc">Ideal para empezar con presencia online sólida.</div>
+        <ul class="price-items">
+          <li>Web de una página completa</li>
+          <li>Sistema de reservas online</li>
+          <li>Servicios, precios y equipo</li>
+          <li>Adaptada a móvil y tablet</li>
+        </ul>
+      </div>
+      <div class="price-card featured">
+        <div class="price-badge">Más solicitado</div>
+        <div class="price-name">Web + Panel</div>
+        <div class="price-amount">750 €</div>
+        <div class="price-unit">pago único</div>
+        <div class="price-desc">Incluye el panel privado para que tus barberos gestionen sus citas.</div>
+        <ul class="price-items">
+          <li>Todo lo del plan básico</li>
+          <li>Panel privado para barberos</li>
+          <li>Filtros por barbero y fecha</li>
+          <li>Estados de reserva editables</li>
+          <li>1 mes de soporte incluido</li>
+        </ul>
+      </div>
+    </div>
+
+    <table class="extras-table">
+      <thead>
+        <tr>
+          <th>Servicio</th>
+          <th>Descripción</th>
+          <th>Precio</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Dominio y hosting</td>
+          <td>Registro del dominio y alojamiento durante el primer año</td>
+          <td>30 – 60 €/año</td>
+        </tr>
+        <tr>
+          <td>Mantenimiento mensual</td>
+          <td>Actualizar servicios, precios o fotos cuando sea necesario (opcional)</td>
+          <td>15 – 30 €/mes</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="disclaimer">Precios orientativos a modo de ejemplo. La propuesta final se ajusta tras conocer el alcance exacto y las necesidades de tu barbería.</p>
+  </div>
+
+  <!-- FOOTER CTA -->
+  <div class="footer-cta">
+    <div class="footer-cta-sub">¿Te interesa para tu barbería?</div>
+    <div class="footer-cta-title">Hablamos sin compromiso.<br>La demo es tuya para enseñarla.</div>
+    <hr class="footer-divider">
+    <div class="footer-name">Óscar Caravaca</div>
+    <div class="footer-contact">
+      <a href="mailto:caravacaoscar@gmail.com">caravacaoscar@gmail.com</a> · 
+      <a href="https://oscarcaravaca.vercel.app" target="_blank">oscarcaravaca.vercel.app</a><br>
+      Técnico Informático &amp; Desarrollador Web · Córdoba, España
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
