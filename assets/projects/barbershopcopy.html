@@ -1674,6 +1674,137 @@
       document
         .querySelectorAll(".reveal")
         .forEach((el) => observer.observe(el));
+
+      // CONFIGURACIÓN DE SUPABASE
+      const SUPABASE_URL = "https://TU-PROYECTO.supabase.co";
+      const SUPABASE_ANON_KEY = "TU_ANON_KEY_PUBLICA";
+      const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      // Configurar fecha mínima (hoy)
+      const dateInput = document.getElementById("date");
+      dateInput.min = new Date().toISOString().split("T")[0];
+
+      const horasDisponibles = [
+        "09:00",
+        "10:00",
+        "11:00",
+        "12:00",
+        "13:00",
+        "16:00",
+        "17:00",
+        "18:00",
+        "19:00",
+      ];
+      let horaSeleccionada = null;
+
+      // Escuchar cambios de fecha o barbero para actualizar los huecos libres
+      dateInput.addEventListener("change", checkAvailability);
+      document
+        .getElementById("barber")
+        .addEventListener("change", checkAvailability);
+
+      async function checkAvailability() {
+        const fecha = dateInput.value;
+        const barbero = document.getElementById("barber").value;
+        const container = document.getElementById("slots-container");
+        container.innerHTML = "";
+        horaSeleccionada = null;
+
+        if (!fecha) return;
+
+        // 1. Consultar la VISTA PÚBLICA que creaste en tu script SQL
+        let query = sb
+          .from("public_availability")
+          .select("reservation_time, barber")
+          .eq("reservation_date", fecha);
+
+        const { data: ocupados, error } = await query;
+        if (error) return console.error(error);
+
+        // 2. Renderizar los botones de horas
+        horasDisponibles.forEach((hora) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "slot-btn";
+          btn.textContent = hora;
+
+          // Verificar si esta hora concreta está completamente llena o bloqueada para el barbero seleccionado
+          const coincidencia = ocupados.filter(
+            (o) => o.reservation_time.slice(0, 5) === hora,
+          );
+
+          let estaOcupado = false;
+          if (barbero === "Cualquiera") {
+            // Si se selecciona "Cualquiera", está ocupado solo si los 3 barberos están llenos a esa hora
+            if (coincidencia.length >= 3) estaOcupado = true;
+          } else {
+            // Si se elige un barbero concreto, está ocupado si ese barbero ya tiene cita
+            estaOcupado = coincidencia.some((o) => o.barber === barbero);
+          }
+
+          if (estaOcupado) {
+            btn.classList.add("occupied");
+            btn.disabled = true;
+          } else {
+            btn.addEventListener("click", () => {
+              document
+                .querySelectorAll(".slot-btn")
+                .forEach((b) => b.classList.remove("selected"));
+              btn.classList.add("selected");
+              horaSeleccionada = hora;
+            });
+          }
+          container.appendChild(btn);
+        });
+      }
+
+      // Enviar la reserva mediante la función RPC segura
+      document
+        .getElementById("btn-submit")
+        .addEventListener("click", async () => {
+          const nombre = document.getElementById("client_name").value;
+          const telefono = document.getElementById("client_phone").value;
+          const servicio = document.getElementById("service").value;
+          const barbero = document.getElementById("barber").value;
+          const fecha = dateInput.value;
+
+          if (!nombre || !telefono || !fecha || !horaSeleccionada) {
+            alert("Por favor rellena todos los datos y selecciona una hora.");
+            return;
+          }
+
+          // Llamar a tu función "create_reservation" mediante RPC
+          const { data, error } = await sb.rpc("create_reservation", {
+            p_name: nombre,
+            p_phone: telefono,
+            p_service: servicio,
+            p_barber: barbero,
+            p_date: fecha,
+            p_time: horaSeleccionada + ":00", // Formato TIME para Postgres (HH:MM:SS)
+          });
+
+          if (error) {
+            if (error.message.includes("slot_taken")) {
+              alert(
+                "Ese horario ya ha sido ocupado por otro cliente justo ahora. Por favor, elige otra hora.",
+              );
+            } else if (error.message.includes("no_availability")) {
+              alert("No hay barberos disponibles en este horario.");
+            } else {
+              alert("Error: " + error.message);
+            }
+            checkAvailability();
+            return;
+          }
+
+          alert(
+            `¡Cita confirmada!\nBarbero: ${data[0].assigned_barber}\nEstado: ${data[0].new_status}`,
+          );
+          // Limpiar formulario
+          document.getElementById("client_name").value = "";
+          document.getElementById("client_phone").value = "";
+          checkAvailability();
+        });
     </script>
   </body>
 </html>

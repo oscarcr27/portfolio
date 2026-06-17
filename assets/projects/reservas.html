@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CUTS·BCN — Cuaderno de reservas</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+      :root {
+        --ink: #15140f;
+        --ink-soft: #1d1b14;
+        --paper: #ede6d6;
+        --paper-dim: #dcd3bd;
+        --brass: #a67c3d;
+        --brass-soft: #c79c5b;
+        --razor: #8b3a3a;
+        --moss: #5c6b4f;
+        --line: #3a372e;
+        --line-on-paper: #c9bfa6;
+        --font-display:
+          "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+        --font-body:
+          -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        --font-mono:
+          "SF Mono", "Cascadia Code", "Roboto Mono", Consolas, monospace;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--ink);
+        color: var(--paper);
+        font-family: var(--font-body);
+        min-height: 100vh;
+      }
+
+      /* ---------- Login ---------- */
+      #login-view {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .login-card {
+        width: 100%;
+        max-width: 380px;
+        background: var(--paper);
+        color: var(--ink);
+        padding: 40px 36px;
+        border-radius: 2px;
+        border-top: 3px solid var(--brass);
+      }
+      .login-card h1 {
+        font-family: var(--font-display);
+        font-style: italic;
+        font-size: 30px;
+        margin: 0 0 4px;
+        letter-spacing: 0.5px;
+      }
+      .login-card p.sub {
+        margin: 0 0 28px;
+        font-size: 13px;
+        color: #5a5648;
+        letter-spacing: 0.04em;
+      }
+      .field {
+        margin-bottom: 20px;
+      }
+      .field label {
+        display: block;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #6b6655;
+        margin-bottom: 6px;
+      }
+      .field input {
+        width: 100%;
+        border: none;
+        border-bottom: 1px solid var(--line-on-paper);
+        background: transparent;
+        padding: 8px 2px;
+        font-size: 15px;
+        color: var(--ink);
+        font-family: var(--font-body);
+      }
+      .field input:focus {
+        outline: none;
+        border-bottom: 1px solid var(--brass);
+      }
+      .btn {
+        font-family: var(--font-body);
+        font-size: 13px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        border: none;
+        cursor: pointer;
+        padding: 12px 20px;
+        border-radius: 2px;
+      }
+      .btn-primary {
+        background: var(--ink);
+        color: var(--paper);
+        width: 100%;
+      }
+      .btn-primary:hover {
+        background: var(--ink-soft);
+      }
+      .error-msg {
+        color: var(--razor);
+        font-size: 13px;
+        margin-top: 16px;
+        display: none;
+      }
+
+      /* ---------- Dashboard ---------- */
+      #dash-view {
+        display: none;
+      }
+      header {
+        background: var(--ink);
+        padding: 22px 28px 18px;
+        border-bottom: 2px solid var(--brass);
+      }
+      .header-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      header h1 {
+        font-family: var(--font-display);
+        font-style: italic;
+        font-size: 24px;
+        margin: 0;
+        color: var(--paper);
+      }
+      header h1 span {
+        color: var(--brass-soft);
+      }
+      #logout-btn {
+        background: transparent;
+        color: var(--paper-dim);
+        border: 1px solid var(--line);
+        font-size: 11px;
+      }
+      #logout-btn:hover {
+        border-color: var(--brass);
+        color: var(--paper);
+      }
+      #stat-line {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--brass-soft);
+        margin-top: 10px;
+        letter-spacing: 0.02em;
+      }
+
+      .filters {
+        background: var(--ink-soft);
+        padding: 14px 28px;
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        align-items: center;
+        border-bottom: 1px solid var(--line);
+      }
+      .filters label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: #8a8470;
+        margin-right: 6px;
+      }
+      .filters input,
+      .filters select {
+        background: var(--ink);
+        color: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 2px;
+        padding: 6px 10px;
+        font-size: 13px;
+        font-family: var(--font-body);
+      }
+      .filters select:focus,
+      .filters input:focus {
+        outline: 1px solid var(--brass);
+      }
+
+      main {
+        padding: 24px 28px 60px;
+        max-width: 980px;
+        margin: 0 auto;
+      }
+      .day-card {
+        background: var(--paper);
+        color: var(--ink);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 78px 1fr 150px 130px 160px 90px;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--paper-dim);
+        animation: fadeIn 0.25s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .row:last-child {
+        border-bottom: none;
+      }
+      .row .time {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--ink);
+      }
+      .row .client b {
+        display: block;
+        font-size: 14px;
+      }
+      .row .client small {
+        font-family: var(--font-mono);
+        color: #6b6655;
+        font-size: 12px;
+      }
+      .row .service,
+      .row .barber {
+        font-size: 13px;
+        color: #3a372e;
+      }
+
+      .status-select {
+        font-size: 12px;
+        padding: 5px 8px;
+        border-radius: 12px;
+        border: 1px solid;
+        font-family: var(--font-body);
+        background: transparent;
+        cursor: pointer;
+      }
+      .status-pendiente {
+        border-color: var(--brass);
+        color: #7a5a25;
+      }
+      .status-confirmada {
+        border-color: var(--moss);
+        color: var(--moss);
+      }
+      .status-completada {
+        border-color: #6b6655;
+        color: #6b6655;
+      }
+      .status-cancelada {
+        border-color: var(--razor);
+        color: var(--razor);
+      }
+
+      .del-btn {
+        background: transparent;
+        border: 1px solid var(--paper-dim);
+        color: #8b3a3a;
+        font-size: 11px;
+        border-radius: 2px;
+        padding: 6px 10px;
+        cursor: pointer;
+      }
+      .del-btn:hover {
+        background: var(--razor);
+        color: var(--paper);
+        border-color: var(--razor);
+      }
+      .empty-state {
+        padding: 60px 20px;
+        text-align: center;
+        color: #6b6655;
+        font-size: 14px;
+      }
+      .empty-state b {
+        display: block;
+        color: var(--ink);
+        font-size: 16px;
+        margin-bottom: 6px;
+        font-family: var(--font-display);
+        font-style: italic;
+      }
+
+      @media (max-width: 720px) {
+        .row {
+          grid-template-columns: 1fr;
+          gap: 4px;
+          padding: 16px;
+        }
+        .row .time {
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="login-view">
+      <form class="login-card" id="login-form">
+        <h1>CUTS·BCN</h1>
+        <p class="sub">Cuaderno de reservas — acceso privado</p>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" required="" autocomplete="username" />
+        </div>
+        <div class="field">
+          <label for="password">Contraseña</label>
+          <input
+            type="password"
+            id="password"
+            required=""
+            autocomplete="current-password"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Entrar</button>
+        <p class="error-msg" id="login-error">
+          Email o contraseña incorrectos.
+        </p>
+      </form>
+    </div>
+
+    <div id="dash-view">
+      <header>
+        <div class="header-row">
+          <h1>CUTS<span>·</span>BCN — Cuaderno</h1>
+          <button id="logout-btn" class="btn">Salir</button>
+        </div>
+        <div id="stat-line">Cargando…</div>
+      </header>
+
+      <div class="filters">
+        <div>
+          <label for="date-filter">Día</label>
+          <input type="date" id="date-filter" />
+        </div>
+        <div>
+          <label for="barber-filter">Barbero</label>
+          <select id="barber-filter">
+            <option value="">Todos</option>
+            <option>Marco Silva</option>
+            <option>David Torres</option>
+            <option>Álvaro Ruiz</option>
+          </select>
+        </div>
+        <div>
+          <label for="status-filter">Estado</label>
+          <select id="status-filter">
+            <option value="">Todos</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="confirmada">Confirmada</option>
+            <option value="completada">Completada</option>
+            <option value="cancelada">Cancelada</option>
+          </select>
+        </div>
+      </div>
+
+      <main>
+        <div class="day-card" id="rows-container">
+          <div class="empty-state"><b>Cargando reservas…</b></div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // CONFIGURACIÓN DE SUPABASE
+      const SUPABASE_URL = "https://qfsweuyjqiisylrgupth.supabase.co";
+      const SUPABASE_ANON_KEY = "sb_publishable_VZf38mBFRj5kUUcTGvRCRA_Sby2ar6d";
+
+      const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      const loginView = document.getElementById("login-view");
+      const dashView = document.getElementById("dash-view");
+      const loginForm = document.getElementById("login-form");
+      const loginError = document.getElementById("login-error");
+      const dateFilter = document.getElementById("date-filter");
+      const barberFilter = document.getElementById("barber-filter");
+      const statusFilter = document.getElementById("status-filter");
+      const rowsContainer = document.getElementById("rows-container");
+      const statLine = document.getElementById("stat-line");
+
+      function todayISO() {
+        return new Date().toISOString().slice(0, 10);
+      }
+
+      function formatDateLabel(iso) {
+        const d = new Date(iso + "T00:00:00");
+        return d.toLocaleDateString("es-ES", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+        });
+      }
+
+      // ---------- Autenticación ----------
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        loginError.style.display = "none";
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const { error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) loginError.style.display = "block";
+      });
+
+      document
+        .getElementById("logout-btn")
+        .addEventListener("click", async () => {
+          await sb.auth.signOut();
+        });
+
+      sb.auth.onAuthStateChange((event, session) => {
+        if (session) {
+          loginView.style.display = "none";
+          dashView.style.display = "block";
+          if (!dateFilter.value) dateFilter.value = todayISO();
+          loadReservations();
+        } else {
+          loginView.style.display = "flex";
+          dashView.style.display = "none";
+        }
+      });
+
+      // ---------- Cargar Datos ----------
+      async function loadReservations() {
+        rowsContainer.innerHTML =
+          '<div class="empty-state"><b>Cargando…</b></div>';
+        const date = dateFilter.value || todayISO();
+
+        // Apunta correctamente a "reservations" en minúsculas y plural
+        let query = sb
+          .from("reservations")
+          .select("*")
+          .eq("reservation_date", date)
+          .order("reservation_time", { ascending: true });
+
+        if (barberFilter.value) query = query.eq("barber", barberFilter.value);
+        if (statusFilter.value) query = query.eq("status", statusFilter.value);
+
+        const { data, error } = await query;
+
+        if (error) {
+          rowsContainer.innerHTML = `<div class="empty-state"><b>No se pudo cargar</b>${error.message}</div>`;
+          return;
+        }
+
+        renderStats(data, date);
+        renderRows(data);
+      }
+
+      function renderStats(data, date) {
+        const pendientes = data.filter((r) => r.status === "pendiente").length;
+        statLine.textContent = `${formatDateLabel(date)} · ${data.length} reservas · ${pendientes} pendientes`;
+      }
+
+      function renderRows(data) {
+        if (!data.length) {
+          rowsContainer.innerHTML =
+            '<div class="empty-state"><b>Sin reservas</b>No hay ninguna cita para este filtro.</div>';
+          return;
+        }
+
+        rowsContainer.innerHTML = "";
+        data.forEach((r) => {
+          const row = document.createElement("div");
+          row.className = "row";
+          row.innerHTML = `
+            <div class="time">${r.reservation_time.slice(0, 5)}</div>
+            <div class="client"><b>${escapeHtml(r.client_name)}</b><small>${escapeHtml(r.client_phone)}</small></div>
+            <div class="service">${escapeHtml(r.service)}</div>
+            <div class="barber">${escapeHtml(r.barber)}</div>
+            <div>
+              <select class="status-select status-${r.status}" data-id="${r.id}">
+                <option value="pendiente" ${r.status === "pendiente" ? "selected" : ""}>Pendiente</option>
+                <option value="confirmada" ${r.status === "confirmada" ? "selected" : ""}>Confirmada</option>
+                <option value="completada" ${r.status === "completada" ? "selected" : ""}>Completada</option>
+                <option value="cancelada" ${r.status === "cancelada" ? "selected" : ""}>Cancelada</option>
+              </select>
+            </div>
+            <div><button class="del-btn" data-id="${r.id}">Eliminar</button></div>
+          `;
+          rowsContainer.appendChild(row);
+        });
+
+        // Evento para cambiar de estado (Utiliza IDs en formato string/UUID)
+        rowsContainer.querySelectorAll(".status-select").forEach((sel) => {
+          sel.addEventListener("change", async (e) => {
+            const id = e.target.dataset.id;
+            const newStatus = e.target.value;
+            e.target.className = `status-select status-${newStatus}`;
+            const { error } = await sb
+              .from("reservations")
+              .update({ status: newStatus })
+              .eq("id", id);
+            if (error) alert("No se pudo actualizar: " + error.message);
+          });
+        });
+
+        // Evento eliminar (Soporta UUID)
+        rowsContainer.querySelectorAll(".del-btn").forEach((btn) => {
+          btn.addEventListener("click", async (e) => {
+            const id = e.target.dataset.id;
+            if (!confirm("¿Eliminar esta reserva? No se puede deshacer."))
+              return;
+            const { error } = await sb
+              .from("reservations")
+              .delete()
+              .eq("id", id);
+            if (error) alert("No se pudo eliminar: " + error.message);
+            else loadReservations();
+          });
+        });
+      }
+
+      function escapeHtml(str) {
+        const div = document.createElement("div");
+        div.textContent = str ?? "";
+        return div.innerHTML;
+      }
+
+      // ---------- Filtros y Listeners ----------
+      dateFilter.addEventListener("change", loadReservations);
+      barberFilter.addEventListener("change", loadReservations);
+      statusFilter.addEventListener("change", loadReservations);
+
+      // Tiempo real vía Canales de Supabase
+      sb.channel("reservations-watch")
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "reservations" },
+          () => {
+            loadReservations();
+          },
+        )
+        .subscribe();
+    </script>
+  </body>
+</html>
