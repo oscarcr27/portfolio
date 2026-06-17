@@ -1616,18 +1616,18 @@
         "sb_publishable_VZf38mBFRj5kUUcTGvRCRA_Sby2ar6d";
       const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-      // Vinculamos las variables con tus IDs reales del formulario viejo
+      // Vinculamos las variables con los IDs reales de tu HTML
       const dateInput = document.getElementById("formDate");
       const barberSelect = document.getElementById("formBarber");
       const serviceSelect = document.getElementById("formService");
-      const container =
-        document.getElementById("slots-container") ||
-        document.getElementById("reviewsTrack"); // Ajusta al ID de tu contenedor de horas si tienes uno dedicado para renderizar botones
+      const slotsBox = document.getElementById("timeSlots"); // <--- Corregido al ID real de tu div
 
       // Forzar que el calendario no elija días pasados
-      const todayISO = new Date().toISOString().split("T")[0];
-      if (dateInput) dateInput.min = todayISO;
+      if (dateInput) {
+        dateInput.min = new Date().toISOString().split("T")[0];
+      }
 
+      // Lista de horas oficiales de la barbería
       const horasDisponibles = [
         "09:00",
         "10:00",
@@ -1641,26 +1641,6 @@
       ];
       let horaSeleccionada = null;
 
-      // Actualizar resumen de precio y tiempo al cambiar servicio
-      if (serviceSelect) {
-        serviceSelect.addEventListener("change", () => {
-          const selectedOption =
-            serviceSelect.options[serviceSelect.selectedIndex];
-          const box = document.getElementById("summaryBox");
-          if (!box) return;
-
-          if (selectedOption.value === "") {
-            box.style.display = "none";
-            return;
-          }
-          const price = selectedOption.getAttribute("data-price");
-          const time = selectedOption.getAttribute("data-time");
-          document.getElementById("summaryPrice").innerText = price + "€";
-          document.getElementById("summaryTime").innerText = time + " min";
-          box.style.display = "flex";
-        });
-      }
-
       // Escuchar cambios de fecha o barbero para actualizar disponibilidad real
       if (dateInput) dateInput.addEventListener("change", checkAvailability);
       if (barberSelect)
@@ -1670,71 +1650,69 @@
         const fecha = dateInput.value;
         const barbero = barberSelect.value;
 
-        // Si usas un contenedor visual para las horas como botones dinámicos
-        const slotsBox = document.getElementById("slots-container");
         if (!slotsBox || !fecha) return;
 
-        slotsBox.innerHTML = "";
+        slotsBox.innerHTML = ""; // Limpiamos las horas estáticas de prueba
         horaSeleccionada = null;
 
-        let query = sb
+        // Consultar huecos ocupados en Supabase
+        let { data: ocupados, error } = await sb
           .from("public_availability")
           .select("reservation_time, barber")
           .eq("reservation_date", fecha);
-        const { data: ocupados, error } = await query;
-        if (error) return console.error(error);
 
+        if (error)
+          return console.error("Error consultando disponibilidad:", error);
+
+        // Renderizar las horas de forma dinámica según la base de datos
         horasDisponibles.forEach((hora) => {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "slot-btn"; // Recuerda darles estilo CSS (.slot-btn, .slot-btn.occupied, .slot-btn.selected)
-          btn.textContent = hora;
+          const divSlot = document.createElement("div");
+          divSlot.className = "slot";
+          divSlot.textContent = hora;
 
           const coincidencia = ocupados.filter(
             (o) => o.reservation_time.slice(0, 5) === hora,
           );
           let estaOcupado = false;
 
-          if (barbero === "Cualquiera" || barbero === "") {
+          if (barbero === "Cualquiera") {
             if (coincidencia.length >= 3) estaOcupado = true;
           } else {
             estaOcupado = coincidencia.some((o) => o.barber === barbero);
           }
 
           if (estaOcupado) {
-            btn.classList.add("occupied");
-            btn.disabled = true;
+            divSlot.classList.add("taken"); // Clase de tu diseño para hora ocupada
           } else {
-            btn.addEventListener("click", () => {
+            // Evento de selección real conectado al flujo de Supabase
+            divSlot.addEventListener("click", () => {
               document
-                .querySelectorAll(".slot-btn")
+                .querySelectorAll(".slot")
                 .forEach((b) => b.classList.remove("selected"));
-              btn.classList.add("selected");
+              divSlot.classList.add("selected");
               horaSeleccionada = hora;
             });
           }
-          slotsBox.appendChild(btn);
+          slotsBox.appendChild(divSlot);
         });
       }
 
-      // Interceptamos el envío del formulario nativo para procesarlo con Supabase
+      // Interceptar el envío del formulario para guardarlo de verdad en la base de datos
       const appointmentForm = document.getElementById("appointmentForm");
       if (appointmentForm) {
         appointmentForm.addEventListener("submit", async (event) => {
-          event.preventDefault();
+          event.preventDefault(); // Detiene la recarga de página
 
           const nombre = document.getElementById("formName").value;
-          const telefono = document.getElementById("formPhone")
-            ? document.getElementById("formPhone").value
-            : "No indicado"; // Asegura que el campo teléfono exista en tu HTML o añade id="formPhone"
+          const telefono = document.getElementById("formPhone").value;
           const servicio = serviceSelect.value;
-          const barbero = barberSelect.value || "Cualquiera";
+          const barbero = barberSelect.value;
           const fecha = dateInput.value;
           const btnSubmit = document.getElementById("submitBtn");
 
           if (!horaSeleccionada) {
             alert(
-              "Por favor, selecciona una hora disponible haciendo clic en los botones de horarios.",
+              "Por favor, selecciona una hora disponible haciendo clic sobre ella.",
             );
             return;
           }
@@ -1742,13 +1720,14 @@
           btnSubmit.innerText = "Procesando...";
           btnSubmit.disabled = true;
 
+          // Llamar a la función segura de tu base de datos
           const { data, error } = await sb.rpc("create_reservation", {
             p_name: nombre,
             p_phone: telefono,
             p_service: servicio,
-            p_barber: barbero === "" ? "Cualquiera" : barbero,
+            p_barber: barbero,
             p_date: fecha,
-            p_time: horaSeleccionada + ":00",
+            p_time: horaSeleccionada + ":00", // Formato TIME para Postgres
           });
 
           if (error) {
@@ -1768,16 +1747,18 @@
           }
 
           alert(
-            `¡Reserva confirmada, ${nombre}!\n\nBarbero asignado: ${data[0].assigned_barber}\nFecha: ${fecha}\nHora: ${horaSeleccionada} hs.\n\nTe esperamos en Carrer de Provença 88.`,
+            `¡Reserva confirmada con éxito, ${nombre}!\n\nBarbero asignado: ${data[0].assigned_barber}\nHora: ${horaSeleccionada} hs.`,
           );
 
-          // Resetear interfaz tras el éxito
+          // Resetear formulario e interfaz
           appointmentForm.reset();
           const summaryBox = document.getElementById("summaryBox");
           if (summaryBox) summaryBox.style.display = "none";
           horaSeleccionada = null;
           btnSubmit.innerText = "Confirmar reserva →";
           btnSubmit.disabled = false;
+
+          // Recargar el panel de horas para actualizar los bloqueos
           checkAvailability();
         });
       }
