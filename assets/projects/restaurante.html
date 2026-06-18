@@ -1996,7 +1996,7 @@
         }
       }
 
-      // Enviar el Formulario (Modificado para enviar de forma invisible a Formspree)
+      // Enviar el Formulario (Modificado para enviar de forma invisible y con diseño limpio)
       async function enviarReserva(e) {
         e.preventDefault();
 
@@ -2008,10 +2008,31 @@
         btnSubmit.innerHTML = "Enviando...";
         btnSubmit.disabled = true;
 
-        // Recolectar la información nativa del formulario
-        const datosFormulario = new FormData(formulario);
+        // 1. CAPTURAMOS LOS VALORES DE TU FORMULARIO
+        const nombre = document.getElementById("nombre").value;
+        const telefono = document.getElementById("telefono").value;
+        const fecha = document.getElementById("fecha").value;
+        const hora = document.getElementById("hora").value;
+        const personas = document.getElementById("personas").value;
+        const zona = document.getElementById("zona").value || "Indiferente";
+        const notas = document.getElementById("notas").value || "Ninguna";
+
+        // 2. CREAMOS UN FORM-DATA BONITO PARA FORMSPREE
+        const datosFormulario = new FormData();
+        datosFormulario.append(
+          "_subject",
+          `🍽️ Nueva Reserva: ${nombre} (${fecha})`,
+        ); // Cambia el asunto del correo
+        datosFormulario.append("Cliente", nombre);
+        datosFormulario.append("Teléfono de Contacto", telefono);
+        datosFormulario.append("Fecha de la Reserva", fecha);
+        datosFormulario.append("Hora Seleccionada", hora);
+        datosFormulario.append("Número de Comensales", personas);
+        datosFormulario.append("Zona Preferida", zona);
+        datosFormulario.append("Notas / Alergias", notas);
 
         try {
+          // 3. ENVIAMOS LOS DATOS
           const respuesta = await fetch(formulario.action, {
             method: "POST",
             body: datosFormulario,
