@@ -1660,6 +1660,7 @@
           <form
             class="form-reserva"
             id="formReserva"
+            action="https://formspree.io/f/xnjykvqo"
             onsubmit="enviarReserva(event)"
           >
             <div class="form-row">
@@ -1668,6 +1669,7 @@
                 <input
                   type="text"
                   id="nombre"
+                  name="Nombre"
                   placeholder="Tu nombre"
                   required
                 />
@@ -1677,6 +1679,7 @@
                 <input
                   type="tel"
                   id="telefono"
+                  name="Telefono"
                   placeholder="600 000 000"
                   required
                 />
@@ -1688,13 +1691,19 @@
                 <input
                   type="date"
                   id="fecha"
+                  name="Fecha"
                   onchange="validarLunesNoche()"
                   required
                 />
               </div>
               <div class="form-group">
                 <label for="hora">Hora</label>
-                <select id="hora" onchange="validarLunesNoche()" required>
+                <select
+                  id="hora"
+                  name="Hora"
+                  onchange="validarLunesNoche()"
+                  required
+                >
                   <option value="" disabled selected>Selecciona</option>
                   <optgroup label="Mediodía">
                     <option value="13:00">13:00</option>
@@ -1723,25 +1732,25 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="personas">Personas</label>
-                <select id="personas" required>
+                <select id="personas" name="Personas" required>
                   <option value="" disabled selected>Número</option>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6</option>
-                  <option>7</option>
-                  <option>8</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
                 </select>
               </div>
               <div class="form-group">
                 <label for="zona">Zona preferida</label>
-                <select id="zona">
+                <select id="zona" name="Zona Preferida">
                   <option value="" disabled selected>Indiferente</option>
-                  <option>Interior</option>
-                  <option>Terraza</option>
-                  <option>Barra</option>
+                  <option value="Interior">Interior</option>
+                  <option value="Terraza">Terraza</option>
+                  <option value="Barra">Barra</option>
                 </select>
               </div>
             </div>
@@ -1749,6 +1758,7 @@
               <label for="notas">Comentarios o alergias</label>
               <textarea
                 id="notas"
+                name="Comentarios"
                 placeholder="Alguna intolerancia, celebración especial..."
               ></textarea>
             </div>
@@ -1793,8 +1803,7 @@
           <i class="fa-brands fa-instagram"></i>
           <div class="contacto-card-titulo">Síguenos</div>
           <div class="contacto-card-texto">
-            @lataberna<br />Facebook: La Taberna<br />TripAdvisor
-            ⭐⭐⭐⭐⭐
+            @lataberna<br />Facebook: La Taberna<br />TripAdvisor ⭐⭐⭐⭐⭐
           </div>
         </div>
       </div>
@@ -1854,6 +1863,7 @@
       if (selectorStats) {
         rereservasObserver.observe(selectorStats);
       }
+
       // Cambiar entre pestañas de platos
       function cambiarTab(btn, panel) {
         document
@@ -1986,23 +1996,61 @@
         }
       }
 
-      // Enviar el Formulario
-      function enviarReserva(e) {
+      // Enviar el Formulario (Modificado para enviar de forma invisible a Formspree)
+      async function enviarReserva(e) {
         e.preventDefault();
-        document.getElementById("formReserva").style.display = "none";
-        document.getElementById("formSuccess").style.display = "block";
 
-        // Limpiamos la comanda y ocultamos la barra
-        comanda = [];
-        actualizarBarraFlotante();
+        const formulario = document.getElementById("formReserva");
+        const btnSubmit = document.getElementById("btnSubmit");
+        const textoOriginalBoton = btnSubmit.innerHTML;
 
-        // Restauramos visualmente todos los elementos de menú por si quieren verlos de nuevo
-        document.querySelectorAll(".menu-item").forEach((item) => {
-          item.style.opacity = "1";
-          item.style.borderLeft = "none";
-          item.style.background = "";
-          item.style.cursor = "pointer";
-        });
+        // Estado visual de carga dinámico
+        btnSubmit.innerHTML = "Enviando...";
+        btnSubmit.disabled = true;
+
+        // Recolectar la información nativa del formulario
+        const datosFormulario = new FormData(formulario);
+
+        try {
+          const respuesta = await fetch(formulario.action, {
+            method: "POST",
+            body: datosFormulario,
+            headers: {
+              Accept: "application/json",
+            },
+          });
+
+          if (respuesta.ok) {
+            // Acciones nativas de tu web tras un envío exitoso
+            formulario.style.display = "none";
+            document.getElementById("formSuccess").style.display = "block";
+
+            // Limpiamos la comanda y ocultamos la barra flotante
+            comanda = [];
+            actualizarBarraFlotante();
+
+            // Restauramos visualmente todos los elementos del menú seleccionados
+            document.querySelectorAll(".menu-item").forEach((item) => {
+              item.style.opacity = "1";
+              item.style.borderLeft = "none";
+              item.style.background = "";
+              item.style.cursor = "pointer";
+            });
+          } else {
+            alert(
+              "Ocurrió un error al procesar tu reserva. Por favor, inténtalo de nuevo.",
+            );
+          }
+        } catch (error) {
+          console.error("Error en la conexión:", error);
+          alert(
+            "No se pudo conectar con el servidor de correos. Comprueba tu conexión de red.",
+          );
+        } finally {
+          // Reestablecer siempre las condiciones del botón
+          btnSubmit.innerHTML = textoOriginalBoton;
+          btnSubmit.disabled = false;
+        }
       }
 
       // Fecha mínima = hoy
