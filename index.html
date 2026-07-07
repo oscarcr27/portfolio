@@ -775,6 +775,108 @@ document.<span class="c-fn">addEventListener</span>(<span class="c-str">'DOMCont
             </a>
           </div>
         </div>
+
+        <!-- PROYECTO 5 -->
+        <div class="proyecto-card">
+          <img
+            src="/assets/img/braseria-dashboard.png"
+            alt="Dashboard de gestión La Brasería"
+            class="proyecto-img"
+          />
+          <div class="proyecto-header">
+            <div class="proyecto-top">
+              <div>
+                <span class="proyecto-status" style="color: var(--blue)">
+                  <i class="fa-solid fa-hammer"></i> En Desarrollo
+                </span>
+                <h3 class="proyecto-title">
+                  La Brasería · Dashboard de Restaurante
+                </h3>
+                <p class="proyecto-desc">
+                  Dashboard de gestión en tiempo real para restaurantes,
+                  construido con Node.js, Express y SQLite. Incluye métricas en
+                  vivo (facturación, cubiertos, ticket medio), gestión de mesas
+                  y pedidos con flujo cocina → servir → cobrar, control de
+                  personal en turno, ventas por categoría y autenticación con
+                  JWT y contraseñas encriptadas. Todo funciona sin dependencias
+                  de nube.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="proyecto-stack">
+            <span class="stack-tag"
+              ><i class="fa-brands fa-html5" style="color: #e34c26"></i>
+              HTML5</span
+            >
+            <span class="stack-tag"
+              ><i class="fa-brands fa-css3-alt" style="color: #264de4"></i>
+              CSS3</span
+            >
+            <span class="stack-tag"
+              ><i class="fa-brands fa-js" style="color: #f7df1e"></i>
+              JavaScript</span
+            >
+            <span class="stack-tag"
+              ><i class="fa-brands fa-node-js" style="color: #3c873a"></i>
+              Node.js</span
+            >
+            <span class="stack-tag"
+              ><i class="fa-solid fa-server" style="color: #4f8ef7"></i>
+              Express</span
+            >
+            <span class="stack-tag"
+              ><i class="fa-solid fa-database" style="color: #4479a1"></i>
+              SQLite</span
+            >
+            <span class="stack-tag"
+              ><i class="fa-solid fa-key" style="color: #f7c948"></i> JWT</span
+            >
+            <span class="stack-tag"
+              ><i class="fa-solid fa-plug" style="color: #3dd68c"></i> API
+              REST</span
+            >
+          </div>
+
+          <div class="proyecto-code">
+            <div class="code-header">
+              <span class="code-filename"
+                ><i class="fa-solid fa-file-code"></i> api.js</span
+              >
+              <button
+                class="code-copy"
+                onclick="copySnippet(this)"
+                title="Copiar código"
+              >
+                <i class="fa-regular fa-copy"></i> Copiar
+              </button>
+            </div>
+            <pre
+              class="code-block"
+            ><code><span class="c-comment">// Avanza el estado de un pedido: cocina → servir → cobrar → cerrado</span>
+router.<span class="c-fn">patch</span>(<span class="c-str">'/pedidos/:id/estado'</span>, (req, res) => {
+  <span class="c-keyword">const</span> { estado } = req.body;
+  <span class="c-keyword">const</span> flujo = [<span class="c-str">'cocina'</span>, <span class="c-str">'servir'</span>, <span class="c-str">'cobrar'</span>, <span class="c-str">'cerrado'</span>];
+  <span class="c-comment">// ... valida transición y actualiza en SQLite</span>
+  db.<span class="c-fn">prepare</span>(<span class="c-str">'UPDATE pedidos SET estado = ? WHERE id = ?'</span>)
+    .<span class="c-fn">run</span>(estado, req.params.id);
+  res.<span class="c-fn">json</span>({ ok: <span class="c-str">true</span> });
+});</code></pre>
+          </div>
+
+          <div class="proyecto-links">
+            <a
+              href="https://github.com/oscarcr27/braseria-dashboard"
+              target="_blank"
+              rel="noopener"
+              class="btn-ghost"
+              style="font-size: 13px; padding: 8px 18px"
+            >
+              <i class="fa-brands fa-github"></i> Ver en GitHub
+            </a>
+          </div>
+        </div>
       </div>
     </section>
 

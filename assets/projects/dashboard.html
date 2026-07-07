@@ -1,0 +1,976 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>La Brasería — Panel de gestión</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f5f5f3;
+        --bg-tertiary: #eeece7;
+        --text-primary: #1a1a18;
+        --text-secondary: #6b6b65;
+        --border: rgba(0, 0, 0, 0.1);
+        --border-md: rgba(0, 0, 0, 0.18);
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --amber: #f5c842;
+        --amber-dark: #b8920a;
+        --amber-bg: rgba(245, 200, 66, 0.12);
+        --blue: #378add;
+        --blue-dark: #185fa5;
+        --blue-bg: rgba(50, 102, 173, 0.1);
+        --green: #3a9c5b;
+        --green-dark: #2e7d4f;
+        --green-bg: rgba(58, 156, 91, 0.1);
+        --red: #c0392b;
+        --red-dark: #a93226;
+        --red-bg: rgba(192, 57, 43, 0.08);
+        --sidebar-bg: #1a1208;
+        --sidebar-text: rgba(255, 255, 255, 0.5);
+        --sidebar-active: #f5c842;
+        --font: "Inter", system-ui, -apple-system, sans-serif;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg-primary: #1e1e1c;
+          --bg-secondary: #262622;
+          --bg-tertiary: #2e2e2a;
+          --text-primary: #f0ede6;
+          --text-secondary: #8a8a82;
+          --border: rgba(255, 255, 255, 0.08);
+          --border-md: rgba(255, 255, 255, 0.14);
+        }
+      }
+
+      body {
+        font-family: var(--font);
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        min-height: 100vh;
+        display: flex;
+        align-items: stretch;
+      }
+
+      /* ── Layout ── */
+      .layout {
+        display: grid;
+        grid-template-columns: 210px 1fr;
+        width: 100%;
+        min-height: 100vh;
+      }
+
+      /* ── Sidebar ── */
+      .sidebar {
+        background: var(--sidebar-bg);
+        display: flex;
+        flex-direction: column;
+        padding: 1.5rem 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+      }
+
+      .sidebar-brand {
+        padding: 0 1.25rem 1.25rem;
+        border-bottom: 0.5px solid rgba(255, 255, 255, 0.07);
+        margin-bottom: 0.75rem;
+      }
+      .sidebar-brand .logo {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--amber);
+        letter-spacing: 0.3px;
+      }
+      .sidebar-brand .sub {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.3);
+        margin-top: 3px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 1.25rem;
+        font-size: 13px;
+        color: var(--sidebar-text);
+        cursor: pointer;
+        border-left: 2px solid transparent;
+        transition:
+          color 0.15s,
+          background 0.15s;
+        user-select: none;
+      }
+      .nav-item:hover {
+        color: rgba(255, 255, 255, 0.8);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .nav-item.active {
+        color: var(--amber);
+        border-left-color: var(--amber);
+        background: rgba(245, 200, 66, 0.07);
+      }
+      .nav-item i {
+        font-size: 17px;
+      }
+
+      .nav-section-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: rgba(255, 255, 255, 0.2);
+        padding: 1rem 1.25rem 0.4rem;
+      }
+
+      .sidebar-footer {
+        margin-top: auto;
+        padding: 1rem 1.25rem;
+        border-top: 0.5px solid rgba(255, 255, 255, 0.07);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #4caf50;
+        box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        animation: blink 2s infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+      .status-label {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.35);
+      }
+
+      /* ── Main ── */
+      .main {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        overflow-x: hidden;
+      }
+
+      /* ── Top bar ── */
+      .topbar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .topbar h1 {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+      .topbar .date {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .ticker {
+        background: var(--sidebar-bg);
+        border-radius: var(--radius-md);
+        padding: 8px 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 340px;
+      }
+      .ticker-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--amber);
+        animation: blink 1.5s infinite;
+        flex-shrink: 0;
+      }
+      .ticker-text {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.55);
+      }
+      .ticker-text strong {
+        color: var(--amber);
+        font-weight: 500;
+      }
+
+      .badge-live {
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 99px;
+        background: var(--amber-bg);
+        color: var(--amber-dark);
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
+      /* ── Metric cards ── */
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .metric-card {
+        background: var(--bg-primary);
+        border: 0.5px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 14px 16px;
+      }
+      .metric-label {
+        font-size: 11px;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 7px;
+      }
+      .metric-value {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--text-primary);
+        line-height: 1;
+      }
+      .metric-delta {
+        font-size: 11px;
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+      }
+      .metric-delta.up {
+        color: var(--green-dark);
+      }
+      .metric-delta.down {
+        color: var(--red-dark);
+      }
+
+      /* ── Card ── */
+      .card {
+        background: var(--bg-primary);
+        border: 0.5px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 1rem 1.25rem;
+      }
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+      .card-title {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .card-title i {
+        font-size: 15px;
+        color: var(--text-secondary);
+      }
+      .card-link {
+        font-size: 11px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+      .card-link:hover {
+        color: var(--text-primary);
+      }
+
+      /* ── Two-column grid ── */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.25rem;
+      }
+
+      /* ── Tables ── */
+      .tables-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 9px;
+      }
+      .table-item {
+        border-radius: var(--radius-md);
+        padding: 9px 6px;
+        text-align: center;
+        cursor: pointer;
+        border: 0.5px solid;
+        transition:
+          transform 0.1s,
+          opacity 0.1s;
+      }
+      .table-item:hover {
+        transform: translateY(-1px);
+        opacity: 0.85;
+      }
+      .table-item.libre {
+        background: var(--green-bg);
+        border-color: rgba(58, 156, 91, 0.3);
+      }
+      .table-item.ocupada {
+        background: var(--amber-bg);
+        border-color: rgba(245, 200, 66, 0.4);
+      }
+      .table-item.reservada {
+        background: var(--blue-bg);
+        border-color: rgba(50, 102, 173, 0.3);
+      }
+      .table-item.pendiente {
+        background: var(--red-bg);
+        border-color: rgba(192, 57, 43, 0.3);
+      }
+      .table-num {
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .table-item.libre .table-num {
+        color: var(--green-dark);
+      }
+      .table-item.ocupada .table-num {
+        color: var(--amber-dark);
+      }
+      .table-item.reservada .table-num {
+        color: var(--blue-dark);
+      }
+      .table-item.pendiente .table-num {
+        color: var(--red-dark);
+      }
+      .table-pax {
+        font-size: 10px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+      }
+
+      .table-legend {
+        display: flex;
+        gap: 14px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        color: var(--text-secondary);
+      }
+      .legend-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+
+      /* ── Orders ── */
+      .orders-list {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+      .orders-list::-webkit-scrollbar {
+        width: 4px;
+      }
+      .orders-list::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .orders-list::-webkit-scrollbar-thumb {
+        background: var(--border-md);
+        border-radius: 4px;
+      }
+
+      .order-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 11px;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        transition: background 0.1s;
+      }
+      .order-row:hover {
+        background: var(--bg-tertiary);
+      }
+      .order-mesa {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        min-width: 54px;
+      }
+      .order-items {
+        font-size: 12px;
+        color: var(--text-primary);
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .order-time {
+        font-size: 11px;
+        color: var(--text-secondary);
+        min-width: 30px;
+        text-align: right;
+      }
+      .order-badge {
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 99px;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      .s-cocina {
+        background: var(--amber-bg);
+        color: var(--amber-dark);
+      }
+      .s-servir {
+        background: var(--blue-bg);
+        color: var(--blue-dark);
+      }
+      .s-cobrar {
+        background: var(--green-bg);
+        color: var(--green-dark);
+      }
+
+      /* ── Chart bars ── */
+      .chart-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .bar-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .bar-category {
+        font-size: 12px;
+        color: var(--text-secondary);
+        min-width: 72px;
+        text-align: right;
+      }
+      .bar-track {
+        flex: 1;
+        background: var(--bg-secondary);
+        border-radius: 99px;
+        height: 10px;
+        overflow: hidden;
+      }
+      .bar-fill {
+        height: 100%;
+        border-radius: 99px;
+        transition: width 0.6s ease;
+      }
+      .bar-amount {
+        font-size: 12px;
+        color: var(--text-primary);
+        font-weight: 500;
+        min-width: 46px;
+        text-align: right;
+      }
+
+      /* ── Staff ── */
+      .staff-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .staff-row {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+      }
+      .staff-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+      .staff-info {
+        flex: 1;
+      }
+      .staff-name {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+      .staff-role {
+        font-size: 11px;
+        color: var(--text-secondary);
+      }
+      .staff-zone {
+        font-size: 11px;
+        color: var(--text-secondary);
+        background: var(--bg-secondary);
+        padding: 3px 8px;
+        border-radius: 99px;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 900px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          display: none;
+        }
+        .metrics {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 520px) {
+        .metrics {
+          grid-template-columns: 1fr 1fr;
+        }
+        .tables-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+        .topbar-right {
+          flex-wrap: wrap;
+        }
+        .ticker {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <!-- ── Sidebar ── -->
+      <aside class="sidebar" role="navigation" aria-label="Menú principal">
+        <div class="sidebar-brand">
+          <div class="logo"><i class="ti ti-chef-hat"></i> La Brasería</div>
+          <div class="sub">Panel de gestión</div>
+        </div>
+
+        <span class="nav-section-label">Principal</span>
+        <div class="nav-item active" data-view="resumen">
+          <i class="ti ti-layout-dashboard"></i> Resumen
+        </div>
+        <div class="nav-item" data-view="mesas">
+          <i class="ti ti-armchair"></i> Mesas
+        </div>
+        <div class="nav-item" data-view="pedidos">
+          <i class="ti ti-receipt"></i> Pedidos
+        </div>
+        <div class="nav-item" data-view="cocina">
+          <i class="ti ti-tools-kitchen-2"></i> Cocina
+        </div>
+
+        <span class="nav-section-label">Gestión</span>
+        <div class="nav-item" data-view="carta">
+          <i class="ti ti-book"></i> Carta
+        </div>
+        <div class="nav-item" data-view="personal">
+          <i class="ti ti-users"></i> Personal
+        </div>
+        <div class="nav-item" data-view="reservas">
+          <i class="ti ti-calendar"></i> Reservas
+        </div>
+        <div class="nav-item" data-view="informes">
+          <i class="ti ti-chart-bar"></i> Informes
+        </div>
+
+        <span class="nav-section-label">Sistema</span>
+        <div class="nav-item" data-view="config">
+          <i class="ti ti-settings"></i> Configuración
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="status-dot"></div>
+          <span class="status-label">Servicio activo</span>
+        </div>
+      </aside>
+
+      <!-- ── Main ── -->
+      <main class="main">
+        <!-- Top bar -->
+        <div class="topbar">
+          <div>
+            <h1>Resumen del día</h1>
+            <div class="date" id="fecha">Cargando fecha…</div>
+          </div>
+          <div class="topbar-right">
+            <div class="ticker" aria-live="polite">
+              <div class="ticker-dot"></div>
+              <div class="ticker-text" id="ticker-msg">Cargando…</div>
+            </div>
+            <span class="badge-live">En vivo</span>
+          </div>
+        </div>
+
+        <!-- Metrics -->
+        <div class="metrics" role="region" aria-label="Métricas del día">
+          <div class="metric-card">
+            <div class="metric-label">Facturación hoy</div>
+            <div class="metric-value">2.847 €</div>
+            <div class="metric-delta up">
+              <i class="ti ti-trending-up" style="font-size: 12px"></i> +12% vs
+              ayer
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Cubiertos</div>
+            <div class="metric-value">68</div>
+            <div class="metric-delta up">
+              <i class="ti ti-trending-up" style="font-size: 12px"></i> +8 vs
+              ayer
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Ticket medio</div>
+            <div class="metric-value">41,9 €</div>
+            <div class="metric-delta up">
+              <i class="ti ti-trending-up" style="font-size: 12px"></i> +3,5% vs
+              ayer
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Tiempo de espera</div>
+            <div class="metric-value">18 min</div>
+            <div class="metric-delta down">
+              <i class="ti ti-trending-down" style="font-size: 12px"></i> +4 min
+              vs media
+            </div>
+          </div>
+        </div>
+
+        <!-- Mesas + Pedidos -->
+        <div class="grid-2">
+          <!-- Mesas -->
+          <div class="card" role="region" aria-label="Estado de mesas">
+            <div class="card-header">
+              <span class="card-title"
+                ><i class="ti ti-armchair"></i> Estado de mesas</span
+              >
+              <span class="card-link">Ver plano</span>
+            </div>
+            <div class="tables-grid" id="tables-grid">
+              <!-- generado por JS -->
+            </div>
+            <div class="table-legend">
+              <div class="legend-item">
+                <div class="legend-dot" style="background: #3a9c5b"></div>
+                Libre (2)
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background: #f5c842"></div>
+                Ocupada (5)
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background: #378add"></div>
+                Reservada (2)
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background: #c0392b"></div>
+                Cuenta (1)
+              </div>
+            </div>
+          </div>
+
+          <!-- Pedidos -->
+          <div class="card" role="region" aria-label="Pedidos activos">
+            <div class="card-header">
+              <span class="card-title"
+                ><i class="ti ti-receipt"></i> Pedidos activos</span
+              >
+              <span class="card-link">Ver todos</span>
+            </div>
+            <div class="orders-list" id="orders-list">
+              <!-- generado por JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Ventas + Personal -->
+        <div class="grid-2">
+          <!-- Ventas por categoría -->
+          <div class="card" role="region" aria-label="Ventas por categoría">
+            <div class="card-header">
+              <span class="card-title"
+                ><i class="ti ti-chart-bar"></i> Ventas por categoría</span
+              >
+            </div>
+            <div class="chart-wrap" id="chart-wrap">
+              <!-- generado por JS -->
+            </div>
+          </div>
+
+          <!-- Personal -->
+          <div class="card" role="region" aria-label="Personal en turno">
+            <div class="card-header">
+              <span class="card-title"
+                ><i class="ti ti-users"></i> Personal en turno</span
+              >
+              <span class="card-link">Gestionar</span>
+            </div>
+            <div class="staff-list" id="staff-list">
+              <!-- generado por JS -->
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // ── Fecha dinámica ──
+      const dias = [
+        "Domingo",
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado",
+      ];
+      const meses = [
+        "enero",
+        "febrero",
+        "marzo",
+        "abril",
+        "mayo",
+        "junio",
+        "julio",
+        "agosto",
+        "septiembre",
+        "octubre",
+        "noviembre",
+        "diciembre",
+      ];
+      const now = new Date();
+      document.getElementById("fecha").textContent =
+        `${dias[now.getDay()]}, ${now.getDate()} de ${meses[now.getMonth()]} de ${now.getFullYear()} · Turno de comidas`;
+
+      // ── Navegación ──
+      document.querySelectorAll(".nav-item").forEach((item) => {
+        item.addEventListener("click", () => {
+          document
+            .querySelectorAll(".nav-item")
+            .forEach((n) => n.classList.remove("active"));
+          item.classList.add("active");
+        });
+      });
+
+      // ── Mesas ──
+      const mesas = [
+        { num: "01", estado: "libre", info: "2 pax" },
+        { num: "02", estado: "ocupada", info: "4 pax · 45m" },
+        { num: "03", estado: "ocupada", info: "2 pax · 22m" },
+        { num: "04", estado: "reservada", info: "14:30" },
+        { num: "05", estado: "ocupada", info: "6 pax · 1h" },
+        { num: "06", estado: "pendiente", info: "Cuenta" },
+        { num: "07", estado: "ocupada", info: "3 pax · 12m" },
+        { num: "08", estado: "libre", info: "4 pax" },
+        { num: "09", estado: "reservada", info: "15:00" },
+        { num: "10", estado: "ocupada", info: "4 pax · 38m" },
+      ];
+      const tablesGrid = document.getElementById("tables-grid");
+      mesas.forEach((m) => {
+        const div = document.createElement("div");
+        div.className = `table-item ${m.estado}`;
+        div.setAttribute("role", "button");
+        div.setAttribute("aria-label", `Mesa ${m.num}, ${m.estado}, ${m.info}`);
+        div.innerHTML = `<div class="table-num">${m.num}</div><div class="table-pax">${m.info}</div>`;
+        tablesGrid.appendChild(div);
+      });
+
+      // ── Pedidos ──
+      const pedidos = [
+        {
+          mesa: "Mesa 02",
+          items: "Cocido madrileño × 2, Vino Ribera",
+          tiempo: "45m",
+          estado: "s-cocina",
+          label: "Cocina",
+        },
+        {
+          mesa: "Mesa 03",
+          items: "Croquetas, Carpaccio, Agua",
+          tiempo: "22m",
+          estado: "s-servir",
+          label: "Servir",
+        },
+        {
+          mesa: "Mesa 05",
+          items: "Paella valenciana × 6, Sangría",
+          tiempo: "1h",
+          estado: "s-cobrar",
+          label: "Cobrar",
+        },
+        {
+          mesa: "Mesa 07",
+          items: "Chuletón, Ensalada mixta, Cerveza",
+          tiempo: "12m",
+          estado: "s-cocina",
+          label: "Cocina",
+        },
+        {
+          mesa: "Mesa 10",
+          items: "Merluza a la vasca × 2, Postre del día",
+          tiempo: "38m",
+          estado: "s-servir",
+          label: "Servir",
+        },
+      ];
+      const ordersList = document.getElementById("orders-list");
+      pedidos.forEach((p) => {
+        const div = document.createElement("div");
+        div.className = "order-row";
+        div.innerHTML = `
+      <span class="order-mesa">${p.mesa}</span>
+      <span class="order-items">${p.items}</span>
+      <span class="order-time">${p.tiempo}</span>
+      <span class="order-badge ${p.estado}">${p.label}</span>
+    `;
+        ordersList.appendChild(div);
+      });
+
+      // ── Ventas por categoría ──
+      const ventas = [
+        { cat: "Carnes", importe: 840, color: "#f5c842" },
+        { cat: "Pescados", importe: 610, color: "#378add" },
+        { cat: "Bebidas", importe: 580, color: "#5dc8a5" },
+        { cat: "Vinos", importe: 450, color: "#c0392b" },
+        { cat: "Entrantes", importe: 390, color: "#f5c842", opacity: "0.55" },
+        { cat: "Postres", importe: 210, color: "#3a9c5b" },
+      ];
+      const maxVenta = Math.max(...ventas.map((v) => v.importe));
+      const chartWrap = document.getElementById("chart-wrap");
+      ventas.forEach((v) => {
+        const pct = Math.round((v.importe / maxVenta) * 100);
+        const row = document.createElement("div");
+        row.className = "bar-row";
+        row.innerHTML = `
+      <span class="bar-category">${v.cat}</span>
+      <div class="bar-track" role="presentation">
+        <div class="bar-fill" style="width:0%;background:${v.color};opacity:${v.opacity || 1}" data-pct="${pct}"></div>
+      </div>
+      <span class="bar-amount">${v.importe} €</span>
+    `;
+        chartWrap.appendChild(row);
+      });
+      // Anima las barras al cargar
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          document.querySelectorAll(".bar-fill").forEach((bar) => {
+            bar.style.width = bar.dataset.pct + "%";
+          });
+        }, 100);
+      });
+
+      // ── Personal ──
+      const personal = [
+        {
+          iniciales: "CR",
+          nombre: "Carlos Ruiz",
+          rol: "Jefe de sala",
+          zona: "Mesas 1–5",
+          color: "#b8920a",
+          bg: "rgba(245,200,66,0.14)",
+        },
+        {
+          iniciales: "AM",
+          nombre: "Ana Martínez",
+          rol: "Camarera",
+          zona: "Mesas 6–10",
+          color: "#185fa5",
+          bg: "rgba(50,102,173,0.12)",
+        },
+        {
+          iniciales: "PG",
+          nombre: "Pedro García",
+          rol: "Jefe de cocina",
+          zona: "Cocina principal",
+          color: "#2e7d4f",
+          bg: "rgba(58,156,91,0.12)",
+        },
+        {
+          iniciales: "LF",
+          nombre: "Laura Fernández",
+          rol: "Ayudante cocina",
+          zona: "Entrantes",
+          color: "#a93226",
+          bg: "rgba(192,57,43,0.1)",
+        },
+      ];
+      const staffList = document.getElementById("staff-list");
+      personal.forEach((p) => {
+        const div = document.createElement("div");
+        div.className = "staff-row";
+        div.innerHTML = `
+      <div class="staff-avatar" style="background:${p.bg};color:${p.color}">${p.iniciales}</div>
+      <div class="staff-info">
+        <div class="staff-name">${p.nombre}</div>
+        <div class="staff-role">${p.rol}</div>
+      </div>
+      <span class="staff-zone">${p.zona}</span>
+    `;
+        staffList.appendChild(div);
+      });
+
+      // ── Ticker en vivo ──
+      const tickerMessages = [
+        ["Mesa 3", "Postre pedido — Tarta de queso"],
+        ["Mesa 5", "Solicita la cuenta"],
+        ["Mesa 8", "Nueva reserva confirmada"],
+        ["Mesa 2", "Vino adicional — Rioja Crianza"],
+        ["Mesa 7", "Chuletón listo para servir"],
+        ["Mesa 1", "Cliente llegó — 2 pax"],
+        ["Mesa 10", "Petición especial sin gluten"],
+        ["Mesa 4", "Reserva cancelada para 15:00"],
+      ];
+      let tickerIdx = 0;
+      const tickerEl = document.getElementById("ticker-msg");
+      function updateTicker() {
+        const [mesa, msg] = tickerMessages[tickerIdx];
+        tickerEl.innerHTML = `Nueva comanda: <strong>${mesa}</strong> — ${msg}`;
+        tickerIdx = (tickerIdx + 1) % tickerMessages.length;
+      }
+      updateTicker();
+      setInterval(updateTicker, 3500);
+    </script>
+  </body>
+</html>
